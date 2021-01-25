@@ -12,11 +12,21 @@ import AppButton from './app/components/AppButton';
 import Card from './app/components/Card';
 import ListDetailsScreen from './app/screens/ListDetailsScreen';
 import MessagesScreen from './app/screens/MessagesScreen';
+import ProfileScreen from './app/screens/ProfileScreen';
+import Screen from './app/components/Screen';
+import Icon from './app/components/Icon';
+import ListItem from './app/components/ListItem';
 export default function App() {
 
   return(
 
-    <MessagesScreen />
+    <Screen>
+      <ListItem
+      title="My title" 
+      subTitle="My subtitle"
+      ImageComponent={<Icon name="email"/>}
+       />
+    </Screen>
  
   );
 }

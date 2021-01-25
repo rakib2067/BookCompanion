@@ -4,27 +4,24 @@ import AppText from '../components/AppText';
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
 import Screen from '../components/Screen'
-function ListDetailsScreen(props) {
+function ProfileScreen(props) {
     return (
-        <Screen>
-            <Image 
-            style={styles.image}
-            source={require('../assets/book1.jpg')} />
-            <View style={styles.detailsContainer}>
-            <AppText style= {styles.title}>One Piece</AppText>
-            <AppText style={styles.author}>Shonen Jump</AppText>
-            <View style={styles.listItem}>
+        <Screen style={{backgroundColor: 'black'}}>
+            
             <ListItem
                 image={require("../assets/Oda.jpg")}
                 title="Eichiro Oda"
                 subTitle="1000 listings"
              />
-             </View>
-            </View>
+             
         </Screen>
     );
 }
 const styles = StyleSheet.create({
+    Screen:{
+        backgroundColor: "silver"
+    }
+    ,
     image:{
         width: '100%',
         height: 300,
@@ -49,4 +46,4 @@ const styles = StyleSheet.create({
     }
     
 })
-export default ListDetailsScreen;
+export default ProfileScreen;
