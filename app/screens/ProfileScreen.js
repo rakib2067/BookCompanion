@@ -1,49 +1,70 @@
 import React from 'react';
-import { Image, View, StyleSheet } from 'react-native';
-import AppText from '../components/AppText';
-import colors from '../config/colors';
 import ListItem from '../components/ListItem';
-import Screen from '../components/Screen'
+import Screen from '../components/Screen';
+import {StyleSheet, View, FlatList} from 'react-native';
+
+import colors from '../config/colors';
+import Icon from '../components/Icon';
+import ListItemSeparator from '../components/ListItemSeparator';
+
+const menuItems = [
+    {title:"My Listings",
+    icon:{
+        name:"format-list-bulleted",
+        backgroundColor:colors.primary,
+     },},
+    {title:"My Messages",
+    icon:{
+        name:"email",
+        backgroundColor:colors.secondary,
+     },}
+]
 function ProfileScreen(props) {
     return (
-        <Screen style={{backgroundColor: 'black'}}>
-            
+        <Screen style={styles.screen}>
+        <View style={styles.container}>
+            <ListItem 
+            title="Eichiro Oda" 
+            subTitle="OnePiece@hotmail.co.uk"
+            image={require('../assets/Oda.jpg')}
+            />
+        </View>
+        <View style={styles.container}>
+        <FlatList
+        data={menuItems}
+        keyExtractor={menuItem=> menuItem.title}
+        ItemSeparatorComponent = {ListItemSeparator}
+        renderItem={({item}) =>
             <ListItem
-                image={require("../assets/Oda.jpg")}
-                title="Eichiro Oda"
-                subTitle="1000 listings"
-             />
-             
+                title={item.title}
+                IconComponent={
+                    <Icon name={item.icon.name} backgroundColor={item.icon.backgroundColor} />
+                }
+            />}
+        />
+        </View>
+        
+            <ListItem 
+                title="Log Out"
+                IconComponent= {
+                    <Icon name="logout" backgroundColor="#ffe66d" />
+                }
+            />
+                    
+        
         </Screen>
+       
     );
 }
-const styles = StyleSheet.create({
-    Screen:{
-        backgroundColor: "silver"
-    }
-    ,
-    image:{
-        width: '100%',
-        height: 300,
 
+const styles = StyleSheet.create({
+    container:{
+        marginVertical:20,
     },
-    detailsContainer:{
-        padding: 20, 
-    },
-    title:{
-        fontSize: 24,
-        fontWeight: 'bold'
-    },
-    author:{
-        color: colors.secondary,
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginVertical: 5
-        
-    },
-    listItem:{
-        marginVertical: 30
+    screen:{
+        backgroundColor: colors.light,
     }
     
 })
+   
 export default ProfileScreen;

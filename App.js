@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, {useState, UseState} from 'react';
 import { useDimensions, useDeviceOrientation } from '@react-native-community/hooks';
-import { StyleSheet, Dimensions,ImageBackground,Platform, Text, StatusBar,View,TouchableNativeFeedback,Image,Alert,SafeAreaView, Button } from 'react-native';
+import { StyleSheet, Dimensions,ImageBackground,Platform, Text, StatusBar,View,TouchableNativeFeedback,Image,Alert,SafeAreaView, Button, TextInput } from 'react-native';
 import { render } from 'react-dom';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import AppText from './app/components/AppText';
@@ -16,16 +16,18 @@ import ProfileScreen from './app/screens/ProfileScreen';
 import Screen from './app/components/Screen';
 import Icon from './app/components/Icon';
 import ListItem from './app/components/ListItem';
+import ListingsScreen from './app/screens/ListingsScreen';
+import AppTextInput from './app/components/AppTextInput';
+
 export default function App() {
+  const [firstName, setFirstName] = useState('');
 
   return(
-
     <Screen>
-      <ListItem
-      title="My title" 
-      subTitle="My subtitle"
-      ImageComponent={<Icon name="email"/>}
-       />
+    <AppTextInput
+      placeholder="Username"
+      icon="email"
+    />
     </Screen>
  
   );
