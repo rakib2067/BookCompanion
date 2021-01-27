@@ -1,10 +1,10 @@
 
 import React, {useState, UseState} from 'react';
 import { useDimensions, useDeviceOrientation } from '@react-native-community/hooks';
-import { StyleSheet, Dimensions,ImageBackground,Platform, Text, StatusBar,View,TouchableNativeFeedback,Image,Alert,SafeAreaView, Button, TextInput } from 'react-native';
+import { StyleSheet, Dimensions,ImageBackground,Platform, Text, StatusBar,View,TouchableNativeFeedback,Image,Alert,SafeAreaView, Button, TextInput, Switch } from 'react-native';
 import { render } from 'react-dom';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
-import AppText from './app/components/AppText';
+
 import WelcomeScreen from './app/screens/WelcomeScreen';
 import ViewImageScreen from './app/screens/ViewImageScreen';
 import LoginButton from './app/components/LoginButton';
@@ -18,16 +18,27 @@ import Icon from './app/components/Icon';
 import ListItem from './app/components/ListItem';
 import ListingsScreen from './app/screens/ListingsScreen';
 import AppTextInput from './app/components/AppTextInput';
+import AppPicker from './app/components/AppPicker';
+import AppText from './app/components/AppText/AppText';
 
+//Define variables outside for hardcoding data (no backend)
+
+const categories =[
+  { label: "Furniture", value: 1},
+  { label: "Electornics", value: 2},
+  { label: "Clothing", value: 3},
+];
 export default function App() {
-  const [firstName, setFirstName] = useState('');
-
+  //define variables inside to create state hooks
+  const [category, setCategory] = useState(categories[0]);
   return(
+    
     <Screen>
-    <AppTextInput
-      placeholder="Username"
-      icon="email"
-    />
+    <AppPicker
+    selectedItem={category}
+    onSelectItem={item => setCategory(item)}
+    items={categories} icon="apps" placeholder="Category"/>
+    <AppTextInput icon="email" placeholder="Email" />
     </Screen>
  
   );

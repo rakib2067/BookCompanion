@@ -7,8 +7,8 @@ function ListItem({image, title,IconComponent, subTitle,onPress,renderRightActio
     return (
         <Swipeable
         renderRightActions={renderRightActions}
-        
         > 
+        
         <TouchableHighlight
         underlayColor={colors.light} 
         onPress={onPress}>
