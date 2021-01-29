@@ -7,12 +7,11 @@ function AppButton({title, onPress, color="primary"}) {
         <TouchableOpacity
         style={[styles.loginButton, {backgroundColor:colors[color]}]}
         onPress={onPress}
-        >
-        
+        >      
         <Text
         style={styles.text}
         >{title}</Text>
-        
+               
         </TouchableOpacity>
     );
 }

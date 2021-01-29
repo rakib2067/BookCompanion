@@ -20,26 +20,19 @@ import ListingsScreen from './app/screens/ListingsScreen';
 import AppTextInput from './app/components/AppTextInput';
 import AppPicker from './app/components/AppPicker';
 import AppText from './app/components/AppText/AppText';
+import LoginScreen from './app/screens/LoginScreen';
 
 //Define variables outside for hardcoding data (no backend)
 
-const categories =[
-  { label: "Furniture", value: 1},
-  { label: "Electornics", value: 2},
-  { label: "Clothing", value: 3},
-];
+
 export default function App() {
   //define variables inside to create state hooks
-  const [category, setCategory] = useState(categories[0]);
+
   return(
     
-    <Screen>
-    <AppPicker
-    selectedItem={category}
-    onSelectItem={item => setCategory(item)}
-    items={categories} icon="apps" placeholder="Category"/>
-    <AppTextInput icon="email" placeholder="Email" />
-    </Screen>
+    
+    <LoginScreen />
+    
  
   );
 }
