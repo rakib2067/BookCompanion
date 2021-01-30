@@ -21,6 +21,8 @@ import AppTextInput from './app/components/AppTextInput';
 import AppPicker from './app/components/AppPicker';
 import AppText from './app/components/AppText/AppText';
 import LoginScreen from './app/screens/LoginScreen';
+import RegisterScreen from './app/screens/RegisterScreen';
+import ListingEditScreen from './app/screens/ListingEditScreen';
 
 //Define variables outside for hardcoding data (no backend)
 
@@ -30,8 +32,7 @@ export default function App() {
 
   return(
     
-    
-    <LoginScreen />
+    <ListingEditScreen />
     
  
   );

@@ -1,16 +1,9 @@
 import React from 'react';
 import { Image, StyleSheet} from 'react-native';
-import AppButton from '../components/AppButton';
-import AppTextInput from '../components/AppTextInput';
-import {Formik} from 'formik';
-import Screen from '../components/Screen';
 import * as Yup from 'yup';
-import AppText from '../components/AppText';
-import ErrorMessage from '../components/ErrorMessage';
-import AppFormField from '../components/AppFormField';
 
-import AppForm from '../components/AppForm';
-import SubmitButton from '../components/SubmitButton';
+import Screen from '../components/Screen';
+import {AppForm,AppFormField,SubmitButton} from '../components/forms'
 function LoginScreen(props) {
 
 const validationSchema = Yup.object().shape({
@@ -57,6 +50,9 @@ const styles = StyleSheet.create({
         alignSelf:"center",
         marginTop:50,
         marginBottom:20
+    },
+    input:{
+        padding:20
     }
 })
 export default LoginScreen;
