@@ -13,7 +13,6 @@ import AppForm from '../components/AppForm';
 import SubmitButton from '../components/SubmitButton';
 function LoginScreen(props) {
 
-
 const validationSchema = Yup.object().shape({
     email: Yup.string().required().email().label("Email"),
     password: Yup.string().required().min(4).label("Password")
@@ -46,9 +45,7 @@ const validationSchema = Yup.object().shape({
                     secureTextEntry
                     textContentType="password" 
                     />
-                <SubmitButton title="Login" />
-                    
-              
+                <SubmitButton title="Login" /> 
             </AppForm>  
         </Screen>
     );
@@ -61,6 +58,5 @@ const styles = StyleSheet.create({
         marginTop:50,
         marginBottom:20
     }
-    
 })
 export default LoginScreen;
