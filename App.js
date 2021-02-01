@@ -1,38 +1,46 @@
 
-import React, {useState, UseState} from 'react';
+import React, {useEffect, useState, UseState} from 'react';
 import { useDimensions, useDeviceOrientation } from '@react-native-community/hooks';
 import { StyleSheet, Dimensions,ImageBackground,Platform, Text, StatusBar,View,TouchableNativeFeedback,Image,Alert,SafeAreaView, Button, TextInput, Switch } from 'react-native';
 import { render } from 'react-dom';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 
-import WelcomeScreen from './app/screens/WelcomeScreen';
-import ViewImageScreen from './app/screens/ViewImageScreen';
-import LoginButton from './app/components/LoginButton';
-import AppButton from './app/components/AppButton';
-import Card from './app/components/Card';
-import ListDetailsScreen from './app/screens/ListDetailsScreen';
-import MessagesScreen from './app/screens/MessagesScreen';
-import ProfileScreen from './app/screens/ProfileScreen';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 import Screen from './app/components/Screen';
-import Icon from './app/components/Icon';
-import ListItem from './app/components/ListItem';
-import ListingsScreen from './app/screens/ListingsScreen';
-import AppTextInput from './app/components/AppTextInput';
-import AppPicker from './app/components/AppPicker';
-import AppText from './app/components/AppText/AppText';
-import LoginScreen from './app/screens/LoginScreen';
-import RegisterScreen from './app/screens/RegisterScreen';
-import ListingEditScreen from './app/screens/ListingEditScreen';
+import ImageInput from './app/components/ImageInput';
 
 //Define variables outside for hardcoding data (no backend)
 
 
 export default function App() {
   //define variables inside to create state hooks
-
+  const [imageUri, setImageUri]=useState();
+  const requestPermission = async () =>{
+  const {granted}= await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (!granted)
+    alert('You need to enable permission in order to use pictures ')
+  }
+    useEffect(() => {
+      requestPermission();
+    },[])
+  const selectImage =async () => {
+  try {
+  const result = await ImagePicker.launchImageLibraryAsync();
+    if (!result.cancelled)
+      setImageUri(result.uri);
+  } catch (error) {
+    console.log('Error reading an image', error)
+  }
+  
+  }
   return(
     
-    <ListingEditScreen />
+    <Screen>
+      <ImageInput 
+      onChangeImage={uri => setImageUri(uri)}
+      imageUri={imageUri} />
+    </Screen>
     
  
   );
