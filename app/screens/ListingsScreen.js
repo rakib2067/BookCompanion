@@ -4,25 +4,29 @@ import { FlatList, StyleSheet } from "react-native";
 import Card from "../components/Card";
 import colors from "../config/colors";
 import Screen from "../components/Screen";
+import routes from "../navigation/routes";
+import AppTextInput from "../components/AppTextInput";
+import { FormField } from "../components/forms";
 
 const listings = [
   {
     id: 1,
-    title: "Red jacket for sale",
+    title: "One Piece",
     price: 100,
-    image: require("../assets/jacket.jpg"),
+    image: require("../assets/book1.jpg"),
   },
   {
     id: 2,
-    title: "Couch in great condition",
+    title: "Harry Poter",
     price: 1000,
-    image: require("../assets/couch.jpg"),
+    image: require("../assets/book2.jpg"),
   },
 ];
 
-function ListingsScreen(props) {
+function ListingsScreen({navigation}) {
   return (
     <Screen style={styles.screen}>
+    <AppTextInput icon="magnify" placeholder="Title/Author/ISBN" backgroundColor={"lightgrey"}/>    
       <FlatList
         data={listings}
         keyExtractor={(listing) => listing.id.toString()}
@@ -31,6 +35,8 @@ function ListingsScreen(props) {
             title={item.title}
             subTitle={"$" + item.price}
             image={item.image}
+            onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
+            backgroundColor={colors.light}
           />
         )}
       />
@@ -40,9 +46,13 @@ function ListingsScreen(props) {
 
 const styles = StyleSheet.create({
   screen: {
-    padding: 20,
-    backgroundColor: colors.light,
+    padding: 10,
+    backgroundColor: colors.white,
   },
+  input:{
+    backgroundColor:"red",
+    flex:1
+  }
 });
 
 export default ListingsScreen;

@@ -4,15 +4,16 @@ import AppText from '../components/AppText'
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
 import Screen from '../components/Screen'
-function ListDetailsScreen(props) {
+function ListDetailsScreen({route}) {
+    const listings=route.params;
     return (
         <Screen>
             <Image 
             style={styles.image}
-            source={require('../assets/book1.jpg')} />
+            source={listings.image} />
             <View style={styles.detailsContainer}>
-            <AppText style= {styles.title}>One Piece</AppText>
-            <AppText style={styles.author}>Shonen Jump</AppText>
+            <AppText style= {styles.title}>{listings.title}</AppText>
+            <AppText style={styles.author}>{listings.subTitle}</AppText>
             <View style={styles.listItem}>
             <ListItem
                 image={require("../assets/Oda.jpg")}
