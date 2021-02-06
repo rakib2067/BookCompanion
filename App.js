@@ -32,6 +32,7 @@ import AppNavigator from './app/navigation/AppNavigator';
 //Define variables outside for hardcoding data (no backend)
 // {} brackets are used to dynamically display data (Application Logic)
 
+// const api_key="AIzaSyAoTVNQJ8sweojgvXzz7TpZuCyJURTcgWA";
 
 export default function App() {
 //define variables inside to create state hooks

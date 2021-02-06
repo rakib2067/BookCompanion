@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 
 import Card from "../components/Card";
@@ -24,9 +24,19 @@ const listings = [
 ];
 
 function ListingsScreen({navigation}) {
+
+  const [book, setBook]=useState("");
+  const [result, setResult]= useState([]);
+  const [apiKey,setApiKey]= useState("AIzaSyAoTVNQJ8sweojgvXzz7TpZuCyJURTcgWA");
+  
+  function handleChange(){
+
+  }
+  
+  
   return (
     <Screen style={styles.screen}>
-    <AppTextInput icon="magnify" placeholder="Title/Author/ISBN" backgroundColor={"lightgrey"}/>    
+    <AppTextInput icon="magnify" onChangeText={handleChange} placeholder="Title/Author/ISBN" backgroundColor={"lightgrey"}/>    
       <FlatList
         data={listings}
         keyExtractor={(listing) => listing.id.toString()}
