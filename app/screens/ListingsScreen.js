@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
+import axios from 'axios';
 
 import Card from "../components/Card";
 import colors from "../config/colors";
@@ -7,44 +8,55 @@ import Screen from "../components/Screen";
 import routes from "../navigation/routes";
 import AppTextInput from "../components/AppTextInput";
 import { FormField } from "../components/forms";
-
-const listings = [
-  {
-    id: 1,
-    title: "One Piece",
-    price: 100,
-    image: require("../assets/book1.jpg"),
-  },
-  {
-    id: 2,
-    title: "Harry Poter",
-    price: 1000,
-    image: require("../assets/book2.jpg"),
-  },
-];
+import { State } from "react-native-gesture-handler";
 
 function ListingsScreen({navigation}) {
+  const apiKey="AIzaSyAoTVNQJ8sweojgvXzz7TpZuCyJURTcgWA";
+  const [state, setState]=useState({
+    s: "Title/Author/ISBN",
+    results:[],
+    selected:{}
 
-  const [book, setBook]=useState("");
-  const [result, setResult]= useState([]);
-  const [apiKey,setApiKey]= useState("AIzaSyAoTVNQJ8sweojgvXzz7TpZuCyJURTcgWA");
+  });
+  const apiURL="https://www.googleapis.com/books/v1/volumes?q="
+
+
   
-  function handleChange(){
+  const search=()=>{
+    axios.get(apiURL+state.s+"&key="+apiKey+"&maxResults=10")
+    .then(({data})=>{
+      let results=data.items;
+      console.log(results);
+      setState(prevState => {
+        return {...prevState, results:results}
+      })
+    });
+
+
+  }
+  const searchCheck=(results)=>{
+    results
 
   }
   
   
   return (
     <Screen style={styles.screen}>
-    <AppTextInput icon="magnify" onChangeText={handleChange} placeholder="Title/Author/ISBN" backgroundColor={"lightgrey"}/>    
+    <AppTextInput 
+      backgroundColor={"lightgrey"} 
+      icon="magnify"  value={state.s} 
+      onChangeText={text => setState(prevState =>{
+        return{...prevState, s:text}
+      })}
+      onSubmitEditing={search} />    
       <FlatList
-        data={listings}
-        keyExtractor={(listing) => listing.id.toString()}
+        data={state.results}
+        
         renderItem={({ item }) => (
           <Card
-            title={item.title}
-            subTitle={"$" + item.price}
-            image={item.image}
+            title={item.volumeInfo.title}
+            subTitle={item.volumeInfo.authors}
+            image={item.volumeInfo.imageLinks.thumbnail}
             onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
             backgroundColor={colors.light}
           />

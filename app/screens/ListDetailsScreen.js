@@ -5,15 +5,15 @@ import colors from '../config/colors';
 import ListItem from '../components/ListItem';
 import Screen from '../components/Screen'
 function ListDetailsScreen({route}) {
-    const listings=route.params;
+    const item=route.params;
     return (
         <Screen>
             <Image 
             style={styles.image}
-            source={listings.image} />
+            source={{uri: item.volumeInfo.imageLinks.thumbnail}} />
             <View style={styles.detailsContainer}>
-            <AppText style= {styles.title}>{listings.title}</AppText>
-            <AppText style={styles.author}>{listings.subTitle}</AppText>
+            <AppText style= {styles.title}>{item.volumeInfo.title}</AppText>
+            <AppText style={styles.author}>{item.volumeInfo.authors}</AppText>
             <View style={styles.listItem}>
             <ListItem
                 image={require("../assets/Oda.jpg")}

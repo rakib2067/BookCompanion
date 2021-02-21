@@ -3,7 +3,7 @@ import { View, TextInput, StyleSheet, Platform } from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import defaultStyles from '../config/styles';
-function AppTextInput({backgroundColor=defaultStyles.colors.light,icon, width="100%",...otherProps}) {
+function AppTextInput({backgroundColor=defaultStyles.colors.light,icon, width="100%",onChangeText,onSubmitEditing ,...otherProps}) {
     return (
         <View style={[styles.container, {backgroundColor},{width}]}>
         {icon &&<MaterialCommunityIcons
@@ -12,6 +12,8 @@ function AppTextInput({backgroundColor=defaultStyles.colors.light,icon, width="1
         style={styles.icon}
         />}
         <TextInput 
+        onChangeText={onChangeText}
+        onSubmitEditing={onSubmitEditing}
         placeholderTextColor={defaultStyles.colors.medium}
         style={defaultStyles.text} {...otherProps} />
         </View> 

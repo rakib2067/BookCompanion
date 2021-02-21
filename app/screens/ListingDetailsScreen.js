@@ -6,13 +6,13 @@ import ListItem from "../components/lists/ListItem";
 import Text from "../components/Text";
 
 function ListingDetailsScreen({route}) {
-  const listing=route.params;
+  const item=route.params;
   return (
     <View>
-      <Image style={styles.image} source={listing.image} />
+      <Image style={styles.image} source={{uri: item.volumeInfo.imageLinks.thumbnail}} />
       <View style={styles.detailsContainer}>
-        <Text style={styles.title}>{listing.title}</Text>
-        <Text style={styles.price}>{listing.price}</Text>
+        <Text style={styles.title}>{item.volumeInfo.title}</Text>
+        <Text style={styles.price}>{item.volumeInfo.authors}</Text>
         <View style={styles.userContainer}>
           <ListItem
             image={require("../assets/me.jpg")}
@@ -24,7 +24,6 @@ function ListingDetailsScreen({route}) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   detailsContainer: {
     padding: 20,
