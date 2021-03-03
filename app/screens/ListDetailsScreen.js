@@ -4,6 +4,7 @@ import AppText from '../components/AppText'
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
 import Screen from '../components/Screen'
+import Icon from '../components/Icon';
 function ListDetailsScreen({route}) {
     const item=route.params;
     return (
@@ -15,11 +16,14 @@ function ListDetailsScreen({route}) {
             <AppText style= {styles.title}>{item.volumeInfo.title}</AppText>
             <AppText style={styles.author}>{item.volumeInfo.authors}</AppText>
             <View style={styles.listItem}>
+            <View styles={styles.iconContainer}>
             <ListItem
-                image={require("../assets/Oda.jpg")}
-                title="Eichiro Oda"
-                subTitle="1000 listings"
+               title="Add to Library"
+               onPress={()=>{console.log("hello")}}
+               IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
              />
+             </View>
+             
              </View>
             </View>
         </Screen>
@@ -47,7 +51,8 @@ const styles = StyleSheet.create({
     },
     listItem:{
         marginVertical: 30
-    }
+    },
+  
     
 })
 export default ListDetailsScreen;
