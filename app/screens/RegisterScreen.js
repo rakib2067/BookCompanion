@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import * as Yup from "yup";
+import firebase from 'firebase';
 
 import Screen from "../components/Screen";
 import { Form, FormField, SubmitButton } from "../components/forms";

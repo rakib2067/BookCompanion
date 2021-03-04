@@ -8,32 +8,26 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 
-import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
-import Screen from './app/components/Screen';
-import ImageInput from './app/components/ImageInput';
-import ImageInputList from './app/components/ImageInputList';
-import colors from './app/config/colors';
-import ListingEditScreen from './app/screens/ListingEditScreen';
-import MessagesScreen from './app/screens/MessagesScreen';
-import ProfileScreen from './app/screens/ProfileScreen';
-import ListingDetailsScreen from './app/screens/ListingDetailsScreen';
-import ListDetailsScreen from './app/screens/ListDetailsScreen';
-import LoginScreen from './app/screens/LoginScreen';
-import RegisterScreen from './app/screens/RegisterScreen';
-import ViewImageScreen from './app/screens/ViewImageScreen';
-import WelcomeScreen from './app/screens/WelcomeScreen';
-import ListingsScreen from './app/screens/ListingsScreen';
-import AccountScreen from './app/screens/AccountScreen';
+import * as firebase from 'firebase';
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBEl6W6u-QKPfM82zeO-cnAb93C7b5W1tk",
+  authDomain: "book-companion-304017.firebaseapp.com",
+  projectId: "book-companion-304017",
+  storageBucket: "book-companion-304017.appspot.com",
+  messagingSenderId: "484527704210",
+  appId: "1:484527704210:web:ba702570d04d8958717e4b",
+  measurementId: "G-VNMP4LKSJ3"
+};
 import AuthNavigator from './app/navigation/AuthNavigator';
 import navigationTheme from './app/navigation/navigationTheme';
 import AppNavigator from './app/navigation/AppNavigator';
 
-//Define variables outside for hardcoding data (no backend)
-// {} brackets are used to dynamically display data (Application Logic)
-
 // const api_key="AIzaSyAoTVNQJ8sweojgvXzz7TpZuCyJURTcgWA";
-
+if(firebase.apps.length===0){
+  firebase.initializeApp(firebaseConfig);
+  //used to make sure there is only 1 instance of firebase is running 
+}
 export default function App() {
 //define variables inside to create state hooks
   
