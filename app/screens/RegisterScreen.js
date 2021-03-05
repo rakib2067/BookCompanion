@@ -11,13 +11,21 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(4).label("Password"),
 });
-
+const handleSubmit= async(userInfo) =>{
+  firebase.auth().createUserWithEmailAndPassword(userInfo.email,userInfo.password)
+  .then((result)=>{
+    console.log(result)
+  })
+  .catch((error)=>{
+    console.log(error)
+  })
+}
 function RegisterScreen() {
   return (
     <Screen style={styles.container}>
       <Form
         initialValues={{ name: "", email: "", password: "" }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
         <FormField

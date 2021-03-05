@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Image } from "react-native";
 import * as Yup from "yup";
-
+import * as firebase from 'firebase';
 import Screen from "../components/Screen";
 import { Form, FormField, SubmitButton } from "../components/forms";
 
@@ -9,7 +9,15 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(4).label("Password"),
 });
-
+const handleSubmit= async(userInfo) =>{
+  firebase.auth().signInWithEmailAndPassword(userInfo.email,userInfo.password)
+  .then((result)=>{
+    console.log(result)
+  })
+  .catch((error)=>{
+    console.log(error)
+  })
+}
 function LoginScreen(props) {
   return (
     <Screen style={styles.container}>
@@ -17,7 +25,7 @@ function LoginScreen(props) {
 
       <Form
         initialValues={{ email: "", password: "" }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
         <FormField
