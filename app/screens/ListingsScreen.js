@@ -13,7 +13,7 @@ import { State } from "react-native-gesture-handler";
 function ListingsScreen({navigation}) {
   const apiKey="AIzaSyAoTVNQJ8sweojgvXzz7TpZuCyJURTcgWA";
   const [state, setState]=useState({
-    s: "Title/Author/ISBN",
+    s: "",
     results:[],
     selected:{}
 
@@ -44,6 +44,7 @@ function ListingsScreen({navigation}) {
     <Screen style={styles.screen}>
     <AppTextInput 
       backgroundColor={"lightgrey"} 
+      placeholder="Title/Author/ISBN"
       icon="magnify"  value={state.s} 
       onChangeText={text => setState(prevState =>{
         return{...prevState, s:text}

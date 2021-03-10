@@ -9,5 +9,5 @@ const storeToken= async authToken =>{
 }
 
 const getToken =() =>{
-    const authToken- await SecureStore.getItemAsync(key);
+    const authToken =await SecureStore.getItemAsync(key);
 }

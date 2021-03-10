@@ -11,7 +11,7 @@ import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import * as firebase from 'firebase';
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  apiKey: "AIzaSyBEl6W6u-QKPfM82zeO-cnAb93C7b5W1tk",
   authDomain: "book-companion-304017.firebaseapp.com",
   projectId: "book-companion-304017",
   storageBucket: "book-companion-304017.appspot.com",
