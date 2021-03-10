@@ -22,6 +22,7 @@ const firebaseConfig = {
 import AuthNavigator from './app/navigation/AuthNavigator';
 import navigationTheme from './app/navigation/navigationTheme';
 import AppNavigator from './app/navigation/AppNavigator';
+import AuthContext from './app/auth/context';
 
 // const api_key="AIzaSyAoTVNQJ8sweojgvXzz7TpZuCyJURTcgWA";
 if(firebase.apps.length===0){
@@ -30,12 +31,13 @@ if(firebase.apps.length===0){
 }
 export default function App() {
 //define variables inside to create state hooks
-  
+  const [user,setUser]=useState();
   return(
-    
+    <AuthContext.Provider value={{user,setUser}}>
     <NavigationContainer theme={navigationTheme}>
-      <AuthNavigator />
+      {user?<AppNavigator/>: <AuthNavigator />}
     </NavigationContainer>
+    </AuthContext.Provider>
 
     
     );
