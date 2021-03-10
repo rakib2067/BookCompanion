@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useContext} from "react";
 import { StyleSheet, View, FlatList } from "react-native";
 
 import { ListItem, ListItemSeparator } from "../components/lists";
@@ -6,7 +6,9 @@ import colors from "../config/colors";
 import Icon from "../components/Icon";
 import Screen from "../components/Screen";
 import routes from "../navigation/routes";
+import AuthContext from "../auth/context";
 
+import * as firebase from 'firebase';
 const menuItems = [
   {
     title: "My Listings",
@@ -26,6 +28,15 @@ const menuItems = [
 ];
 
 function AccountScreen({navigation}) {
+  const{user, setUser}= useContext(AuthContext);
+  const handleLogOut =() =>{
+    firebase.auth().signOut().then(() => {
+      setUser(null)
+    }).catch((error) => {
+      console.log(error)
+    });
+    
+  }
   return (
     <Screen style={styles.screen}>
       <View style={styles.container}>
@@ -57,8 +68,7 @@ function AccountScreen({navigation}) {
       <ListItem
         title="Log Out"
         IconComponent={<Icon name="logout" backgroundColor="#ffe66d" />}
-        
-      />
+        onPress={handleLogOut} />
     </Screen>
   );
 }

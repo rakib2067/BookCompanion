@@ -11,7 +11,7 @@ import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import * as firebase from 'firebase';
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBEl6W6u-QKPfM82zeO-cnAb93C7b5W1tk",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "book-companion-304017.firebaseapp.com",
   projectId: "book-companion-304017",
   storageBucket: "book-companion-304017.appspot.com",
@@ -32,6 +32,14 @@ if(firebase.apps.length===0){
 export default function App() {
 //define variables inside to create state hooks
   const [user,setUser]=useState();
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      console.log("User is signed in")
+      
+    } else {
+      console.log("User is signed out")
+    }
+  });
   return(
     <AuthContext.Provider value={{user,setUser}}>
     <NavigationContainer theme={navigationTheme}>
