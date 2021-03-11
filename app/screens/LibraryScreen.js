@@ -5,22 +5,17 @@ import { ListItem } from "../components/lists";
 import Screen from '../components/Screen';
 import colors from '../config/colors';
 import * as firebase from 'firebase';
+import routes from '../navigation/routes';
 
-function LibraryScreen(props) {
+function LibraryScreen({navigation}) {
   
   const user=firebase.auth().currentUser.uid;
-  const [count,setCount]=useState(0);
+  const [count,setCount]=useState();
   var x = []
   const current= firebase.firestore().collection("users")
   .doc(user).collection("currently").get().then((querySnapshot)=>{
-    querySnapshot.forEach((doc)=>{
-      console.log(doc.id);
-      x[i]=doc.id
-    })
+    setCount(querySnapshot.size)
   })
-    console.log(x)
-  console.log(current)
-  console.log(count)
 
   return (
         
@@ -29,8 +24,8 @@ function LibraryScreen(props) {
         
         <ListItem
           title="Currently Reading"
-          subTitle={count+ " books"}
-          onPress={()=>{console.log("hello")}}
+          subTitle={count? count+ " books":" books"}
+          onPress={() => navigation.navigate(routes.CURRENT_DETAILS)}
           IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
         />
       </View>

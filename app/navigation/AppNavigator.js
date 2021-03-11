@@ -6,6 +6,7 @@ import ListingEditScreen from '../screens/ListingEditScreen';
 import FeedNavigator from './FeedNavigator';
 import AccountNavigator from './AccountNavigator';
 import LibraryScreen from '../screens/LibraryScreen';
+import LibraryNavigator from './LibraryNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,7 +18,7 @@ const AppNavigator = () => (
         <MaterialCommunityIcons name="home" color={color} size={size}/>
       }}
     />
-    <Tab.Screen name="Library" component={LibraryScreen} 
+    <Tab.Screen name="Library" component={LibraryNavigator} 
       options= {{
         tabBarIcon: ({color,size}) =>
         <MaterialCommunityIcons name="book-open-variant" color={color} size={size}/>
