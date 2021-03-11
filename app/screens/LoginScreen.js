@@ -17,7 +17,6 @@ function LoginScreen(props) {
     firebase.auth().signInWithEmailAndPassword(userInfo.email,userInfo.password)
     .then((result)=>{
       const user=result;
-      console.log(user)
       authContext.setUser(user);
     })
     .catch((error)=>{

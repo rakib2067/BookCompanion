@@ -1,26 +1,39 @@
-import React from "react";
+import React, {useContext}from "react";
 import { StyleSheet } from "react-native";
 import * as Yup from "yup";
 import firebase from 'firebase';
 
 import Screen from "../components/Screen";
 import { Form, FormField, SubmitButton } from "../components/forms";
+import AuthContext from "../auth/context";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(4).label("Password"),
 });
-const handleSubmit= async(userInfo) =>{
-  firebase.auth().createUserWithEmailAndPassword(userInfo.email,userInfo.password)
+
+function RegisterScreen() {
+  const authContext=useContext(AuthContext)
+  const handleSubmit= async({name, email, password}) =>{
+  firebase.auth().createUserWithEmailAndPassword(email,password)
   .then((result)=>{
-    console.log(result)
+    const user= result
+    firebase.firestore().collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .set({
+        name, 
+        email
+
+      })
+    authContext.setUser(user);
+    
+
   })
   .catch((error)=>{
     console.log(error)
   })
 }
-function RegisterScreen() {
   return (
     <Screen style={styles.container}>
       <Form

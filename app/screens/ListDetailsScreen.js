@@ -5,8 +5,31 @@ import colors from '../config/colors';
 import ListItem from '../components/ListItem';
 import Screen from '../components/Screen'
 import Icon from '../components/Icon';
+import * as firebase from 'firebase';
 function ListDetailsScreen({route}) {
+    
     const item=route.params;
+    const title=item.volumeInfo.title;
+    const author=item.volumeInfo.authors;
+    const image= item.volumeInfo.imageLinks.thumbnail
+    const user=firebase.auth().currentUser.uid
+    const handleClick= ()=>{
+    firebase.firestore().collection("books")
+      .doc(item.volumeInfo.title)
+      .set({
+          title,
+          author,
+          image
+      })
+    
+    firebase.firestore().collection("users")
+      .doc(user).collection("currently")
+      .doc(title).set({
+            title,
+
+      })
+       
+    }
     return (
         <Screen>
             <Image 
@@ -19,7 +42,7 @@ function ListDetailsScreen({route}) {
             <View styles={styles.iconContainer}>
             <ListItem
                title="Add to Library"
-               onPress={()=>{console.log("hello")}}
+               onPress={handleClick}
                IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
              />
              </View>

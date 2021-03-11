@@ -9,6 +9,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBEl6W6u-QKPfM82zeO-cnAb93C7b5W1tk",
@@ -19,6 +20,7 @@ const firebaseConfig = {
   appId: "1:484527704210:web:ba702570d04d8958717e4b",
   measurementId: "G-VNMP4LKSJ3"
 };
+
 import AuthNavigator from './app/navigation/AuthNavigator';
 import navigationTheme from './app/navigation/navigationTheme';
 import AppNavigator from './app/navigation/AppNavigator';

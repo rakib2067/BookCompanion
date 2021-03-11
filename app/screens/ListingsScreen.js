@@ -9,8 +9,9 @@ import routes from "../navigation/routes";
 import AppTextInput from "../components/AppTextInput";
 import { FormField } from "../components/forms";
 import { State } from "react-native-gesture-handler";
-
+import * as firebase from 'firebase'
 function ListingsScreen({navigation}) {
+
   const apiKey="AIzaSyAoTVNQJ8sweojgvXzz7TpZuCyJURTcgWA";
   const [state, setState]=useState({
     s: "",
