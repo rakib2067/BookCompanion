@@ -6,12 +6,12 @@ import ListItem from '../components/ListItem';
 import Screen from '../components/Screen'
 import Icon from '../components/Icon';
 import * as firebase from 'firebase';
-function ListDetailsScreen({route}) {
+function LibraryDetailsScreen({route}) {
     
     const item=route.params;
-    const title=item.volumeInfo.title;
-    const author=item.volumeInfo.authors;
-    const image= item.volumeInfo.imageLinks.thumbnail
+    // const title=item.volumeInfo.title;
+    // const author=item.volumeInfo.authors;
+    // const image= item.volumeInfo.imageLinks.thumbnail
     const user=firebase.auth().currentUser.uid
     const handleClick= ()=>{
     firebase.firestore().collection("books")
@@ -80,4 +80,4 @@ const styles = StyleSheet.create({
   
     
 })
-export default ListDetailsScreen;
+export default LibraryDetailsScreen;

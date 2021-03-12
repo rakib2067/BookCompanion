@@ -1,26 +1,46 @@
-import React from "react";
-import { View, Image, StyleSheet } from "react-native";
+import React,{useState,useEffect} from "react";
+import { View, Image, StyleSheet,FlatList } from "react-native";
 
 import colors from "../config/colors";
 import ListItem from "../components/lists/ListItem";
 import Text from "../components/Text";
-
-function CurrentDetailsScreen(props) {
+import Screen from "../components/Screen";
+import * as firebase from 'firebase';
+import routes from "../navigation/routes";
+import Card from "../components/Card";
+function CurrentDetailsScreen({navigation}) {
+  const[state,setState]= useState({
+    results: [],
+    
+  });
+  useEffect(() =>{
+    let Result=[];
+    firebase.firestore().collection("users")
+    .doc(firebase.auth().currentUser.uid).collection("currently").get().then((snapshot)=>{
+      snapshot.docs.forEach(doc =>{
+        Result.push(doc.data())
+      })
+      setState({results: Result});
+    })
+  },[])
+  
     return (
-    <View>
-      {/* <Image style={styles.image} source={{uri: item.volumeInfo.imageLinks.thumbnail}} />
-      <View style={styles.detailsContainer}>
-        <Text style={styles.title}>{item.volumeInfo.title}</Text>
-        <Text style={styles.price}>{item.volumeInfo.authors}</Text>
-        <View style={styles.userContainer}>
-          <ListItem
-            image={require("../assets/me.jpg")}
-            title="Rakib Ali"
-            subTitle="5 Listings"
+      
+      <Screen > 
+        <FlatList
+        data={state.results}
+        
+        renderItem={({item}) => (
+          <Card
+            title={item.title}
+            subTitle={item.author}
+            image={item.image}
+            onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
+            backgroundColor={colors.light}
           />
-        </View>
-      </View> */}
-    </View>
+        )}
+      />
+      </Screen>
   );
 }
 

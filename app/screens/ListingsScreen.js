@@ -40,7 +40,6 @@ function ListingsScreen({navigation}) {
 
   }
   
-  
   return (
     <Screen style={styles.screen}>
     <AppTextInput 

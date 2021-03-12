@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet,View} from 'react-native';
+import { StyleSheet,View,ActivityIndicator} from 'react-native';
 import Icon from '../components/Icon';
 import { ListItem } from "../components/lists";
 import Screen from '../components/Screen';
@@ -11,7 +11,7 @@ function LibraryScreen({navigation}) {
   
   const user=firebase.auth().currentUser.uid;
   const [count,setCount]=useState();
-  var x = []
+  
   const current= firebase.firestore().collection("users")
   .doc(user).collection("currently").get().then((querySnapshot)=>{
     setCount(querySnapshot.size)
@@ -24,7 +24,7 @@ function LibraryScreen({navigation}) {
         
         <ListItem
           title="Currently Reading"
-          subTitle={count? count+ " books":" books"}
+          subTitle={count? count+ " books":<ActivityIndicator/>}
           onPress={() => navigation.navigate(routes.CURRENT_DETAILS)}
           IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
         />
