@@ -14,36 +14,41 @@ function LibraryDetailsScreen({route}) {
     // const image= item.volumeInfo.imageLinks.thumbnail
     const user=firebase.auth().currentUser.uid
     const handleClick= ()=>{
-    firebase.firestore().collection("books")
-      .doc(item.volumeInfo.title)
-      .set({
-          title,
-          author,
-          image
-      })
+    // firebase.firestore().collection("books")
+    //   .doc(item.volumeInfo.title)
+    //   .set({
+    //       title,
+    //       author,
+    //       image
+    //   })
     
-    firebase.firestore().collection("users")
-      .doc(user).collection("currently")
-      .doc(title).set({
-            title,
-            author,
-            image
+    // firebase.firestore().collection("users")
+    //   .doc(user).collection("currently")
+    //   .doc(title).set({
+    //         title,
+    //         author,
+    //         image
 
-      })
+    //   })
        
     }
     return (
         <Screen>
             <Image 
             style={styles.image}
-            source={{uri: item.volumeInfo.imageLinks.thumbnail? item.volumeInfo.imageLinks.thumbnail:item.image}} />
+            source={{uri: item.image}} />
             <View style={styles.detailsContainer}>
-            <AppText style= {styles.title}>{item.volumeInfo.title?item.volumeInfo.title:item.title}</AppText>
-            <AppText style={styles.author}>{item.volumeInfo.authors?item.volumeInfo.authors:item.authors}</AppText>
+            <AppText style= {styles.title}>{item.title}</AppText>
+            <AppText style={styles.author}>{item.author}</AppText>
             <View style={styles.listItem}>
             <View styles={styles.iconContainer}>
             <ListItem
-               title="Add to Library"
+               title="Add to Read"
+               onPress={handleClick}
+               IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
+             />
+             <ListItem
+               title="Delete"
                onPress={handleClick}
                IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
              />

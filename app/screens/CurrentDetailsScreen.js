@@ -8,6 +8,7 @@ import Screen from "../components/Screen";
 import * as firebase from 'firebase';
 import routes from "../navigation/routes";
 import Card from "../components/Card";
+
 function CurrentDetailsScreen({navigation}) {
   const[state,setState]= useState({
     results: [],
@@ -16,26 +17,23 @@ function CurrentDetailsScreen({navigation}) {
   useEffect(() =>{
     let Result=[];
     firebase.firestore().collection("users")
-    .doc(firebase.auth().currentUser.uid).collection("currently").get().then((snapshot)=>{
+    .doc(firebase.auth().currentUser.uid).collection("currently reading").onSnapshot((snapshot)=>{
       snapshot.docs.forEach(doc =>{
         Result.push(doc.data())
       })
       setState({results: Result});
     })
   },[])
-  
     return (
-      
       <Screen > 
         <FlatList
         data={state.results}
-        
         renderItem={({item}) => (
           <Card
             title={item.title}
             subTitle={item.author}
             image={item.image}
-            onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
+            onPress={() => navigation.navigate(routes.LIBRARY_DETAILS, item)}
             backgroundColor={colors.light}
           />
         )}

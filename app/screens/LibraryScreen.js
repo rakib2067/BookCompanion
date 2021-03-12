@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { StyleSheet,View,ActivityIndicator} from 'react-native';
 import Icon from '../components/Icon';
 import { ListItem } from "../components/lists";
@@ -10,12 +10,26 @@ import routes from '../navigation/routes';
 function LibraryScreen({navigation}) {
   
   const user=firebase.auth().currentUser.uid;
-  const [count,setCount]=useState();
-  
-  const current= firebase.firestore().collection("users")
-  .doc(user).collection("currently").get().then((querySnapshot)=>{
-    setCount(querySnapshot.size)
+  const [current,setCurrent]=useState();
+  const [past,setPast]=useState();
+  const [future,setFuture]=useState();
+
+  useEffect(() =>{
+  firebase.firestore().collection("users")
+  .doc(firebase.auth().currentUser.uid).collection("currently reading").onSnapshot(snapshot=>{
+    setCurrent(snapshot.size)
   })
+  firebase.firestore().collection("users")
+  .doc(firebase.auth().currentUser.uid).collection("read").onSnapshot(snapshot=>{
+    setPast(snapshot.size)
+  })
+  firebase.firestore().collection("users")
+  .doc(firebase.auth().currentUser.uid).collection("want to read").onSnapshot(snapshot=>{
+    setFuture(snapshot.size)
+  }) 
+  },[])
+  
+  
 
   return (
         
@@ -24,7 +38,7 @@ function LibraryScreen({navigation}) {
         
         <ListItem
           title="Currently Reading"
-          subTitle={count? count+ " books":<ActivityIndicator/>}
+          subTitle={current? current+ " books":<ActivityIndicator/>}
           onPress={() => navigation.navigate(routes.CURRENT_DETAILS)}
           IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
         />
@@ -32,7 +46,7 @@ function LibraryScreen({navigation}) {
       <View style={styles.container1}>
         <ListItem
           title="Want To Read"
-          subTitle="0 Books"
+          subTitle={future? future+ " books":<ActivityIndicator/>}
           onPress={()=>{console.log("hello")}}
           IconComponent={<Icon iconColor="#98fb98" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
         />
@@ -41,7 +55,7 @@ function LibraryScreen({navigation}) {
         <ListItem
           
           title="Read"
-          subTitle="0 Books"
+          subTitle={past? past+ " books":<ActivityIndicator/>}
           onPress={()=>{console.log("hello")}}
           IconComponent={<Icon iconColor="#7289DA" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
           
