@@ -1,10 +1,12 @@
 export default Object.freeze({
-    LISTING_DETAILS:"ListingDetails",
     CURRENT_DETAILS:"CurrentDetails",
+    FUTURE_DETAILS:"FutureDetails",
+    LISTING_DETAILS:"ListingDetails",
     LISTING_EDIT: "ListingEdit",
     LIBRARY_DETAILS:"LibraryDetails",
     LOGIN: "Login",
     MESSAGES: "Messages",
+    PAST_DETAILS:"PastDetails",
     REGISTER: "Register",
     WELCOME: "Welcome"
 

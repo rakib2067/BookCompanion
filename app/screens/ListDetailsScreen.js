@@ -116,11 +116,7 @@ function ListDetailsScreen({route}) {
             <AppText style={styles.author}>{item.volumeInfo.authors}</AppText>
             <View style={styles.listItem}>
             <View styles={styles.iconContainer}>
-            <ListItem
-               title="Add to Library"
-               onPress={handleClick}
-               IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
-             />
+      
               <AppPicker 
               selectedItem={category?category:storage}
               onSelectItem={item =>setCategory(item)}
