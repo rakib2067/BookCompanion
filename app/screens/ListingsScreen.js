@@ -27,7 +27,7 @@ function ListingsScreen({navigation}) {
     axios.get(apiURL+state.s+"&key="+apiKey+"&maxResults=10")
     .then(({data})=>{
       let results=data.items;
-      console.log(results);
+    
       setState(prevState => {
         return {...prevState, results:results}
       })

@@ -9,15 +9,18 @@ import * as firebase from 'firebase';
 import AppPicker from '../components/Picker';
 function ListDetailsScreen({route}) {
     const [category, setCategory]=useState(0);
+    const [storage, setStorage]=useState(0);
+    const item=route.params;
+    const title=item.volumeInfo.title;
+    const author=item.volumeInfo.authors;
+    const image= item.volumeInfo.imageLinks.thumbnail
+    const user=firebase.auth().currentUser.uid
     const categories=[
         {
-            
-            
             label: "currently reading",
             value: 1,
           },
           {
-         
             label: "want to read",
             value: 2,
           },
@@ -28,23 +31,58 @@ function ListDetailsScreen({route}) {
     ]
 
     useEffect(() =>{
+        const currentRef=firebase.firestore().collection("users")
+        .doc(firebase.auth().currentUser.uid).collection("currently reading")
+        .doc(title);
+        const futureRef=firebase.firestore().collection("users")
+        .doc(firebase.auth().currentUser.uid).collection("want to read")
+        .doc(title);
+        const pastRef=firebase.firestore().collection("users")
+        .doc(firebase.auth().currentUser.uid).collection("read")
+        .doc(title);
+        
+        currentRef.get().then((doc)=>{
+            if (doc.exists){
+                console.log("doc exists")
+                setStorage({label:"currently reading", value:1})
+            }
+        })
+        futureRef.get().then((doc)=>{
+            if (doc.exists){
+                console.log("doc exists")
+                setStorage({label:"want to read", value:2})
+            }
+        })
+        pastRef.get().then((doc)=>{
+            if (doc.exists){
+                console.log("doc exists")
+                setStorage({label:"read", value:3})
+            }
+        })
     
-        if(category!=0){
+        if(category)
+        {
         firebase.firestore().collection("users")
         .doc(firebase.auth().currentUser.uid).collection(category.label)
         .doc(title).set({
               title,
               author,
               image
-  
-        })}
+        })
+        if(storage){
+            firebase.firestore().collection("users")
+            .doc(firebase.auth().currentUser.uid).collection(storage.label)
+            .doc(title).delete().then(()=>{
+                console.log("Document deleted")
+            }).catch((e)=>{
+                console.error("Error removing document"+e)
+            })
+        }
+        }
+
         
-      },[])
-    const item=route.params;
-    const title=item.volumeInfo.title;
-    const author=item.volumeInfo.authors;
-    const image= item.volumeInfo.imageLinks.thumbnail
-    const user=firebase.auth().currentUser.uid
+      },[category])
+   
     const handleClick= ()=>{
     firebase.firestore().collection("books")
       .doc(item.volumeInfo.title)
@@ -84,7 +122,7 @@ function ListDetailsScreen({route}) {
                IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
              />
               <AppPicker 
-              selectedItem={category}
+              selectedItem={category?category:storage}
               onSelectItem={item =>setCategory(item)}
               items={categories}
               icon="apps" 
