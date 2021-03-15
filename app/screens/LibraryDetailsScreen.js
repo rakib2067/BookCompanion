@@ -7,12 +7,14 @@ import Screen from '../components/Screen'
 import Icon from '../components/Icon';
 import AppPicker from '../components/Picker';
 import * as firebase from 'firebase';
-function LibraryDetailsScreen({route}) {
+import routes from '../navigation/routes';
+
+function LibraryDetailsScreen({route},{navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
     const item=route.params;
     const title=item.title;
-    const author=item.authors;
+    const author=item.author;
     const image= item.image
     const user=firebase.auth().currentUser.uid
     const categories=[
@@ -74,38 +76,17 @@ function LibraryDetailsScreen({route}) {
             .doc(firebase.auth().currentUser.uid).collection(storage.label)
             .doc(title).delete().then(()=>{
                 console.log("Document deleted")
+                
             }).catch((e)=>{
                 console.error("Error removing document"+e)
             })
         }
         }
-
-        
       },[category])
+  
    
-    const handleClick= ()=>{
-    firebase.firestore().collection("books")
-      .doc(item.volumeInfo.title)
-      .set({
-          title,
-          author,
-          image
-      })
     
-    firebase.firestore().collection("users")
-      .doc(user).collection("currently reading")
-      .doc(title).set({
-            title,
-            author,
-            image
 
-      })
-    
-    
-       
-    }
-    
- 
     return (
         <Screen>
             <Image 

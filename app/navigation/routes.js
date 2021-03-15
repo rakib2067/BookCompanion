@@ -4,6 +4,7 @@ export default Object.freeze({
     LISTING_DETAILS:"ListingDetails",
     LISTING_EDIT: "ListingEdit",
     LIBRARY_DETAILS:"LibraryDetails",
+    LIBRARY_SCREEN:"Library",
     LOGIN: "Login",
     MESSAGES: "Messages",
     PAST_DETAILS:"PastDetails",
