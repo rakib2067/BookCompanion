@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Image, View, StyleSheet } from 'react-native';
+import { Image, View, StyleSheet, ScrollView, DatePickerAndroid } from 'react-native';
 import AppText from '../components/AppText'
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
@@ -8,10 +8,12 @@ import Icon from '../components/Icon';
 import AppPicker from '../components/Picker';
 import * as firebase from 'firebase';
 import routes from '../navigation/routes';
+import { AirbnbRating } from 'react-native-ratings';
 
 function LibraryDetailsScreen({route},{navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
+    const [rating,setRating]=useState();
     const item=route.params;
     const title=item.title;
     const author=item.author;
@@ -31,7 +33,23 @@ function LibraryDetailsScreen({route},{navigation}) {
             value: 3,
           },
     ]
+    useEffect(()=>{
+        const ratingRef=firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
+        ratingRef.get().then((doc)=>{
+            if(doc.exists){
+                setRating(doc.rating.value)
+            }
+        })
+        if(rating){
+            const x=rating;
+            firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
+            .set({
+                x
+            })
+            
+        } 
 
+    },[rating])
     useEffect(() =>{
         const currentRef=firebase.firestore().collection("users")
         .doc(firebase.auth().currentUser.uid).collection("currently reading")
@@ -88,7 +106,7 @@ function LibraryDetailsScreen({route},{navigation}) {
     
 
     return (
-        <Screen>
+        <ScrollView>
             <Image 
             style={styles.image}
             source={{uri: item.image}} />
@@ -103,12 +121,18 @@ function LibraryDetailsScreen({route},{navigation}) {
               items={categories}
               icon="apps" 
               placeholder="Add To Library"/>
+            <AirbnbRating
+               count={5}
+               defaultRating={rating}
+               showRating
+               onFinishRating={rating => setRating({rating:rating})}
+            />
             
              </View>
              
              </View>
             </View>
-        </Screen>
+            </ScrollView>
     );
 }
 const styles = StyleSheet.create({
