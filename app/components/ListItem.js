@@ -4,7 +4,7 @@ import colors from '../config/colors';
 import AppText from './AppText';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
-function ListItem({image, title,IconComponent, subTitle,onPress,renderRightActions}) {
+function ListItem({image, title,IconComponent, subTitle,onPress,numberOfLines=3,renderRightActions}) {
     return (
         <Swipeable
         renderRightActions={renderRightActions}
@@ -19,7 +19,7 @@ function ListItem({image, title,IconComponent, subTitle,onPress,renderRightActio
         source={image}/>}
         <View style={styles.textContainer}>
         <AppText style= {styles.title} numberOfLines={1}>{title}</AppText>
-        {subTitle &&<AppText style= {styles.subTitle}  numberOfLines={2}>{subTitle}</AppText>}
+        {subTitle &&<AppText style= {styles.subTitle}  numberOfLines={numberOfLines}>{subTitle}</AppText>}
         </View>
         <MaterialCommunityIcons color={colors.medium}   name="chevron-right" size={25} />
         </View>

@@ -1,5 +1,5 @@
-import React,{useContext} from "react";
-import { StyleSheet, View, FlatList } from "react-native";
+import React,{useContext,useEffect,useState} from "react";
+import { StyleSheet, View, FlatList, ActivityIndicator, Alert } from "react-native";
 
 import { ListItem, ListItemSeparator } from "../components/lists";
 import colors from "../config/colors";
@@ -9,13 +9,18 @@ import routes from "../navigation/routes";
 import AuthContext from "../auth/context";
 
 import * as firebase from 'firebase';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants'
+import { Colors } from "react-native/Libraries/NewAppScreen";
 const menuItems = [
   {
-    title: "My Listings",
+    title: "My Library",
     icon: {
       name: "format-list-bulleted",
-      backgroundColor: colors.primary,
+      backgroundColor: "#02ced1",
     },
+    targetScreen:routes.LIBRARY_SCREEN
   },
   {
     title: "My Messages",
@@ -28,6 +33,73 @@ const menuItems = [
 ];
 
 function AccountScreen({navigation}) {
+  
+  const[state,setState]=useState();
+  const[image,setImage]=useState(null);
+  const[close,setClose]=useState(0)
+  
+  useEffect(()=>{
+    var storage=firebase.storage().ref(firebase.auth().currentUser.uid).getDownloadURL()
+    .then((url)=>{
+      setImage(url)
+    }).catch((error)=>{
+      Alert.alert("upload a profile picture")
+      setImage(null)
+      
+    })
+  },[close])
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
+  const deleteProfile= ()=>{
+    var profdel=firebase.storage().ref(firebase.auth().currentUser.uid).delete()
+    .then(()=>{
+      Alert.alert('File succesfully deleted')
+      setClose(close+1)
+    }).catch((error)=>{
+      Alert.alert(error)
+    })
+    
+  }
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      uploadImage(result.uri,firebase.auth().currentUser.uid)
+      .then(()=>{
+        setClose(close+1)
+        Alert.alert("Success")
+      })
+      .catch((error)=>{
+        Alert.alert(error)
+
+      })
+    }
+  };
+  useEffect(()=>{
+    firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid).get()
+    .then((doc)=>{
+      setState(doc.data())
+    })
+
+  },[])
+  const uploadImage=async(uri,imageName)=>{
+    const response = await fetch(uri);
+    const blob= await response.blob()
+    var ref=firebase.storage().ref().child(imageName)
+    return ref.put(blob)
+  }
   const{user, setUser}= useContext(AuthContext);
   const handleLogOut =() =>{
     firebase.auth().signOut().then(() => {
@@ -35,18 +107,20 @@ function AccountScreen({navigation}) {
     }).catch((error) => {
       console.log(error)
     });
-    
   }
   return (
     <Screen style={styles.screen}>
       <View style={styles.container}>
+        
         <ListItem
-          title="Rakib Ali"
-          subTitle="rakib7@hotmail.co.uk"
-          image={require("../assets/me.jpg")}
+          title={state?state.name:<ActivityIndicator animating/>}
+          subTitle={state?state.email:<ActivityIndicator animating/>}
+          image={{uri:image}}
+          onPress={pickImage}
         />
       </View>
       <View style={styles.container}>
+        <ListItem title="Delete Profile Pic" onPress={deleteProfile} IconComponent={<Icon name="delete" backgroundColor={colors.primary}/>} />
         <FlatList
           data={menuItems}
           keyExtractor={(menuItem) => menuItem.title}
@@ -64,6 +138,7 @@ function AccountScreen({navigation}) {
             />
           )}
         />
+       
       </View>
       <ListItem
         title="Log Out"

@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Image, View, StyleSheet, ScrollView, DatePickerAndroid } from 'react-native';
+import { Image, View, StyleSheet, ScrollView, Alert, FlatList } from 'react-native';
 import AppText from '../components/AppText'
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
@@ -9,12 +9,21 @@ import AppPicker from '../components/Picker';
 import * as firebase from 'firebase';
 import routes from '../navigation/routes';
 import { AirbnbRating } from 'react-native-ratings';
+import AppTextInput from '../components/AppTextInput';
+import ListItemSeparator from '../components/ListItemSeparator';
+import ListDeleteAction from '../components/ListDeleteAction';
 
 function LibraryDetailsScreen({route},{navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
     const [rating,setRating]=useState();
     const [def,setDef]=useState();
+    const[review,setReview]=useState({
+        count:0
+    });
+    const[reviews,setReviews]=useState({
+        results:[]
+    });
     const item=route.params;
     const title=item.title;
     const author=item.author;
@@ -99,6 +108,7 @@ function LibraryDetailsScreen({route},{navigation}) {
               author,
               image
         })
+        Alert.alert("This Book has changed libraries")
         if(storage){
             firebase.firestore().collection("users")
             .doc(firebase.auth().currentUser.uid).collection(storage.label)
@@ -111,10 +121,49 @@ function LibraryDetailsScreen({route},{navigation}) {
         }
         }
       },[category])
-  
+    const handleSubmit=()=>{
+        let x=1
+        firebase.firestore().collection("books").doc(title).collection("reviews").doc(user).set({
+            review
+        })
+        setReview({count:x})
+    }
     
     console.log(rating)
+    useEffect(()=>{
+        let Result=[]
+        firebase.firestore().collection("books").doc(title).collection("reviews").onSnapshot((snapshot)=>{
+            snapshot.docs.forEach(doc =>{
+              Result.push(doc.data())
+            })
+            setReviews({results: Result});
+          })
 
+    },[review])
+    //Everything under here is from messages screen
+    const initialMessages= [
+        {
+            id:1,
+            title:'T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1',
+            description:'How are youHow are youHow are youHow are youHow are youHow are youHow are youHow are youHow are youHow are youHow are you',
+            image: require('../assets/me.jpg')
+        },
+        {
+            id:2,
+            title:'T2',
+            description:'D2',
+            image: require('../assets/me.jpg')
+        },
+    ]
+    const [number,setNumber]=useState();
+    const [messages, setMessages]= useState(initialMessages);
+    const [refreshing, setRefreshing]= useState(false);
+    const handleDelete= message =>{
+        //delete the message from messages
+        setMessages(messages.filter((m) => m.id !== message.id));
+    
+    };
+    console.log(review)
     return (
         <ScrollView>
             <Image 
@@ -131,14 +180,38 @@ function LibraryDetailsScreen({route},{navigation}) {
               items={categories}
               icon="apps" 
               placeholder="Add To Library"/>
-            <AirbnbRating
+            <View style={styles.rating} >
+            <AirbnbRating 
                count={5}
                defaultRating={def?def.rating:0}
                onFinishRating={rated => setRating(rated)}
             />
+            </View>
+            <ListItem title="Reviews" />
+            <AppTextInput
+            placeholder="Write a review"
+            onSubmitEditing={handleSubmit}
+            onChangeText={text => setReview(text)}
+            />
+            <FlatList 
+            data={reviews.results}
+            renderItem={({item}) => 
+            <ListItem 
+                // title={item.reviews}
+                subTitle={item.review}
+                
+                numberOfLines={number? number: 2}
+                onPress={()=>setNumber(10)}
+                renderRightActions={()=>
+                <ListDeleteAction onPress={()=>handleDelete(item)}/>}
+            />}
+        
+            ItemSeparatorComponent={ListItemSeparator}
             
-             </View>
-             
+        />
+            
+
+             </View>           
              </View>
             </View>
             </ScrollView>
@@ -167,6 +240,9 @@ const styles = StyleSheet.create({
     listItem:{
         marginVertical: 30
     },
+    rating:{
+        
+    }
   
     
 })

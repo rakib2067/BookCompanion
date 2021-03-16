@@ -8,8 +8,8 @@ import Screen from '../components/Screen';
 const initialMessages= [
     {
         id:1,
-        title:'T1',
-        description:'D1',
+        title:'T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1',
+        description:'How are youHow are youHow are youHow are youHow are youHow are youHow are youHow are youHow are youHow are youHow are you',
         image: require('../assets/me.jpg')
     },
     {
@@ -20,14 +20,9 @@ const initialMessages= [
     },
 ]
 
-function MessagesScreen(props) {
-    const [messages, setMessages]= useState(initialMessages);
-    const [refreshing, setRefreshing]= useState(false);
-    const handleDelete= message =>{
-        //delete the message from messages
-        setMessages(messages.filter((m) => m.id !== message.id));
 
-    };
+function MessagesScreen(props) {
+
     return (
         <Screen >
         <FlatList 
@@ -38,7 +33,8 @@ function MessagesScreen(props) {
                 title={item.title}
                 subTitle={item.description}
                 image={item.image}
-                onPress={()=>console.log("message selected", item)}
+                numberOfLines={number? number: 2}
+                onPress={()=>setNumber(10)}
                 renderRightActions={()=>
                 <ListDeleteAction onPress={()=>handleDelete(item)}/>}
             />}
