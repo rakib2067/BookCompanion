@@ -14,6 +14,7 @@ function LibraryDetailsScreen({route},{navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
     const [rating,setRating]=useState();
+    const [def,setDef]=useState();
     const item=route.params;
     const title=item.title;
     const author=item.author;
@@ -34,17 +35,26 @@ function LibraryDetailsScreen({route},{navigation}) {
           },
     ]
     useEffect(()=>{
+        let Rate;
         const ratingRef=firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
         ratingRef.get().then((doc)=>{
             if(doc.exists){
-                setRating(doc.rating.value)
+                console.log("exists")
+                Rate=doc.data()
+                setDef(Rate)
+                console.log("hello"+JSON.stringify(Rate))
+                console.log("bye"+Rate)
             }
         })
+
+    },[])
+    useEffect(()=>{
+        
         if(rating){
             const x=rating;
             firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
             .set({
-                x
+                rating
             })
             
         } 
@@ -102,8 +112,8 @@ function LibraryDetailsScreen({route},{navigation}) {
         }
       },[category])
   
-   
     
+    console.log(rating)
 
     return (
         <ScrollView>
@@ -123,9 +133,8 @@ function LibraryDetailsScreen({route},{navigation}) {
               placeholder="Add To Library"/>
             <AirbnbRating
                count={5}
-               defaultRating={rating}
-               showRating
-               onFinishRating={rating => setRating({rating:rating})}
+               defaultRating={def?def.rating:0}
+               onFinishRating={rated => setRating(rated)}
             />
             
              </View>

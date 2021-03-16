@@ -69,6 +69,10 @@ function ListDetailsScreen({route}) {
               author,
               image
         })
+        firebase.firestore().collection("books").doc(item.volumeInfo.title)
+        .set({
+        
+        })
         if(storage){
             firebase.firestore().collection("users")
             .doc(firebase.auth().currentUser.uid).collection(storage.label)
@@ -84,13 +88,7 @@ function ListDetailsScreen({route}) {
       },[category])
    
     const handleClick= ()=>{
-    firebase.firestore().collection("books")
-      .doc(item.volumeInfo.title)
-      .set({
-          title,
-          author,
-          image
-      })
+    
     
     firebase.firestore().collection("users")
       .doc(user).collection("currently reading")

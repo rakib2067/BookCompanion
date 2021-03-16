@@ -38,7 +38,7 @@ function LibraryScreen({navigation}) {
         
         <ListItem
           title="Currently Reading"
-          subTitle={current? current+ " books":<ActivityIndicator/>}
+          subTitle={current? current+ " books":"0 books"}
           onPress={() => navigation.navigate(routes.CURRENT_DETAILS)}
           IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
         />
@@ -46,7 +46,7 @@ function LibraryScreen({navigation}) {
       <View style={styles.container1}>
         <ListItem
           title="Want To Read"
-          subTitle={future? future+ " books":<ActivityIndicator/>}
+          subTitle={future? future+ " books":"0 books"}
           onPress={() => navigation.navigate(routes.FUTURE_DETAILS)}
           IconComponent={<Icon iconColor="#98fb98" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
         />
@@ -55,7 +55,7 @@ function LibraryScreen({navigation}) {
         <ListItem
           
           title="Read"
-          subTitle={past? past+ " books":<ActivityIndicator/>}
+          subTitle={past? past+ " books":"0 books"}
           onPress={() => navigation.navigate(routes.PAST_DETAILS)}
           IconComponent={<Icon iconColor="#7289DA" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
           
