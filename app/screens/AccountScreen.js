@@ -68,6 +68,7 @@ function AccountScreen({navigation}) {
     })
     
   }
+  //Changing and deleting profile pic
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -111,7 +112,6 @@ function AccountScreen({navigation}) {
   return (
     <Screen style={styles.screen}>
       <View style={styles.container}>
-        
         <ListItem
           title={state?state.name:<ActivityIndicator animating/>}
           subTitle={state?state.email:<ActivityIndicator animating/>}
@@ -121,6 +121,7 @@ function AccountScreen({navigation}) {
       </View>
       <View style={styles.container}>
         <ListItem title="Delete Profile Pic" onPress={deleteProfile} IconComponent={<Icon name="delete" backgroundColor={colors.primary}/>} />
+        <ListItemSeparator/>
         <FlatList
           data={menuItems}
           keyExtractor={(menuItem) => menuItem.title}

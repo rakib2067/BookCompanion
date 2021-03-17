@@ -18,6 +18,7 @@ function LibraryDetailsScreen({route},{navigation}) {
     const [storage, setStorage]=useState(0);
     const [rating,setRating]=useState();
     const [def,setDef]=useState();
+    const [name, setName]=useState();
     const[review,setReview]=useState({
         count:0
     });
@@ -48,15 +49,20 @@ function LibraryDetailsScreen({route},{navigation}) {
         const ratingRef=firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
         ratingRef.get().then((doc)=>{
             if(doc.exists){
-                console.log("exists")
                 Rate=doc.data()
                 setDef(Rate)
-                console.log("hello"+JSON.stringify(Rate))
-                console.log("bye"+Rate)
+                
             }
         })
 
     },[])
+    useEffect(()=>{
+        firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid).get()
+        .then((doc)=>{
+          setName(doc.data())
+        })
+    
+      },[])
     useEffect(()=>{
         
         if(rating){
@@ -123,13 +129,16 @@ function LibraryDetailsScreen({route},{navigation}) {
       },[category])
     const handleSubmit=()=>{
         let x=1
+        const userName=name.name
+        
+
         firebase.firestore().collection("books").doc(title).collection("reviews").doc(user).set({
+            userName,
             review
         })
         setReview({count:x})
     }
     
-    console.log(rating)
     useEffect(()=>{
         let Result=[]
         firebase.firestore().collection("books").doc(title).collection("reviews").onSnapshot((snapshot)=>{
@@ -163,7 +172,6 @@ function LibraryDetailsScreen({route},{navigation}) {
         setMessages(messages.filter((m) => m.id !== message.id));
     
     };
-    console.log(review)
     return (
         <ScrollView>
             <Image 
@@ -197,7 +205,7 @@ function LibraryDetailsScreen({route},{navigation}) {
             data={reviews.results}
             renderItem={({item}) => 
             <ListItem 
-                // title={item.reviews}
+                title={item.userName}
                 subTitle={item.review}
                 
                 numberOfLines={number? number: 2}
