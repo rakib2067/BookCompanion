@@ -130,12 +130,16 @@ function LibraryDetailsScreen({route},{navigation}) {
     const handleSubmit=()=>{
         let x=1
         const userName=name.name
-        
-
-        firebase.firestore().collection("books").doc(title).collection("reviews").doc(user).set({
+        uid=firebase.auth().currentUser.uid
+        var storage=firebase.storage().ref(firebase.auth().currentUser.uid).getDownloadURL()
+        .then((url)=>{
+            firebase.firestore().collection("books").doc(title).collection("reviews").doc(user).set({
+            uid,
             userName,
-            review
-        })
+            review,
+            url
+        })})
+        
         setReview({count:x})
     }
     
@@ -150,27 +154,19 @@ function LibraryDetailsScreen({route},{navigation}) {
 
     },[review])
     //Everything under here is from messages screen
-    const initialMessages= [
-        {
-            id:1,
-            title:'T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1',
-            description:'How are youHow are youHow are youHow are youHow are youHow are youHow are youHow are youHow are youHow are youHow are you',
-            image: require('../assets/me.jpg')
-        },
-        {
-            id:2,
-            title:'T2',
-            description:'D2',
-            image: require('../assets/me.jpg')
-        },
-    ]
     const [number,setNumber]=useState();
-    const [messages, setMessages]= useState(initialMessages);
-    const [refreshing, setRefreshing]= useState(false);
-    const handleDelete= message =>{
-        //delete the message from messages
-        setMessages(messages.filter((m) => m.id !== message.id));
-    
+    const handleDelete= item =>{
+        if(item.uid==firebase.auth().currentUser.uid){
+        firebase.firestore().collection("books").doc(title).collection("reviews").doc(item.uid).delete()
+        .then(()=>{
+            Alert.alert('Review Deleted')
+        }).catch((e)=>{
+            Alert.alert('Error: '+e)
+
+        })}
+        else{
+            Alert.alert('You do not have permission to remove this document')
+        }
     };
     return (
         <ScrollView>
@@ -207,7 +203,7 @@ function LibraryDetailsScreen({route},{navigation}) {
             <ListItem 
                 title={item.userName}
                 subTitle={item.review}
-                
+                image={{uri:item.url}}
                 numberOfLines={number? number: 2}
                 onPress={()=>setNumber(10)}
                 renderRightActions={()=>

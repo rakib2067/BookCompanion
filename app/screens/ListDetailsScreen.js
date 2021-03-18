@@ -103,21 +103,7 @@ function ListDetailsScreen({route}) {
         
       },[category])
    
-    const handleClick= ()=>{
-    
-    
-    firebase.firestore().collection("users")
-      .doc(user).collection("currently reading")
-      .doc(title).set({
-            title,
-            author,
-            image
-
-      })
-    
-    
-       
-    }
+  
     
     return (
         <ScrollView style={styles.container}>
@@ -137,14 +123,14 @@ function ListDetailsScreen({route}) {
               items={categories}
               icon="apps" 
               placeholder="Add To Library"/>
-              <ListItem title="Reviews" />
+              <ListItem title="Reviews" chevron={false}/>
             <FlatList 
             data={reviews.results}
             renderItem={({item}) => 
             <ListItem
                 title={item.userName}
                 subTitle={item.review}
-                
+                image={{uri:item.url}}
                 numberOfLines={number? number: 2}
                 onPress={()=>setNumber(10)}
                 renderRightActions={()=>
