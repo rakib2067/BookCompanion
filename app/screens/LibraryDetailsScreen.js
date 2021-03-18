@@ -140,7 +140,6 @@ function LibraryDetailsScreen({route},{navigation}) {
             url
         })})
         
-        setReview({count:x})
     }
     
     useEffect(()=>{
