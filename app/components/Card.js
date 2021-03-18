@@ -4,9 +4,11 @@ import { View, StyleSheet, Image } from "react-native";
 import Text from "./Text";
 import colors from "../config/colors";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 
-function Card({backgroundColor, title, subTitle, image,onPress }) {
+function Card({backgroundColor, title, subTitle, image,onPress,renderRightActions }) {
   return (
+    <Swipeable renderRightActions={renderRightActions}>
     <TouchableWithoutFeedback onPress={onPress}>
     <View style={[styles.card, {backgroundColor}]}>
       <Image style={styles.image} source={{uri: image}} />
@@ -20,6 +22,7 @@ function Card({backgroundColor, title, subTitle, image,onPress }) {
       </View>
     </View>
     </TouchableWithoutFeedback>
+    </Swipeable>
   );
 }
 

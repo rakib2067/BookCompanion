@@ -8,6 +8,7 @@ import Screen from "../components/Screen";
 import * as firebase from 'firebase';
 import routes from "../navigation/routes";
 import Card from "../components/Card";
+import CardDeleteAction from "../components/CardDeleteAction";
 
 function FutureDetailsScreen({navigation}) {
   const[state,setState]= useState({
@@ -24,6 +25,15 @@ function FutureDetailsScreen({navigation}) {
       setState({results: Result});
     })
   },[])
+  const handleDelete= item =>{
+    firebase.firestore().collection("users")
+    .doc(firebase.auth().currentUser.uid).collection("want to read").doc(item.title).delete()
+    .then(()=>{
+      Alert.alert('Removed from library')
+    }).catch((e)=>{
+      Alert.alert('Error:' + e)
+    })
+  }
     return (
       <Screen > 
         <FlatList
@@ -35,6 +45,8 @@ function FutureDetailsScreen({navigation}) {
             image={item.image}
             onPress={() => navigation.navigate(routes.LIBRARY_DETAILS, item)}
             backgroundColor={colors.light}
+            renderRightActions={()=>
+                <CardDeleteAction onPress={()=>handleDelete(item)}/>}
           />
         )}
       />

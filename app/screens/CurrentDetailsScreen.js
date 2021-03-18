@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { View, Image, StyleSheet,FlatList } from "react-native";
+import { View, Image, StyleSheet,FlatList, Alert } from "react-native";
 
 import colors from "../config/colors";
 import ListItem from "../components/lists/ListItem";
@@ -8,6 +8,7 @@ import Screen from "../components/Screen";
 import * as firebase from 'firebase';
 import routes from "../navigation/routes";
 import Card from "../components/Card";
+import CardDeleteAction from "../components/CardDeleteAction";
 
 function CurrentDetailsScreen({navigation}) {
   const[state,setState]= useState({
@@ -24,6 +25,19 @@ function CurrentDetailsScreen({navigation}) {
       setState({results: Result});
     })
   },[])
+  useEffect(()=>{
+    
+  },[])
+  const handleDelete= item =>{
+    firebase.firestore().collection("users")
+    .doc(firebase.auth().currentUser.uid).collection("currently reading").doc(item.title).delete()
+    .then(()=>{
+      Alert.alert('Removed from library')
+    }).catch((e)=>{
+      Alert.alert('Error:' + e)
+    })
+  }
+
     return (
       <Screen > 
         <FlatList
@@ -32,6 +46,8 @@ function CurrentDetailsScreen({navigation}) {
           <Card
             title={item.title}
             subTitle={item.author}
+            renderRightActions={()=>
+                <CardDeleteAction onPress={()=>handleDelete(item)}/>}
             image={item.image}
             onPress={() => navigation.navigate(routes.LIBRARY_DETAILS, item)}
             backgroundColor={colors.light}

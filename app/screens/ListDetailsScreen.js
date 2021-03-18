@@ -133,8 +133,6 @@ function ListDetailsScreen({route}) {
                 image={{uri:item.url}}
                 numberOfLines={number? number: 2}
                 onPress={()=>setNumber(10)}
-                renderRightActions={()=>
-                <ListDeleteAction onPress={()=>handleDelete(item)}/>}
             />}
         
             ItemSeparatorComponent={ListItemSeparator}
