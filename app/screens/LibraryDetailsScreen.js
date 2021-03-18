@@ -19,6 +19,7 @@ function LibraryDetailsScreen({route},{navigation}) {
     const [rating,setRating]=useState();
     const [def,setDef]=useState();
     const [name, setName]=useState();
+    const [submitted,setSubmitted]=useState(true);
     const[review,setReview]=useState({
         count:0
     });
@@ -138,7 +139,8 @@ function LibraryDetailsScreen({route},{navigation}) {
             userName,
             review,
             url
-        })})
+        })
+        setSubmitted(!submitted)})
         
     }
     
@@ -151,7 +153,7 @@ function LibraryDetailsScreen({route},{navigation}) {
             setReviews({results: Result});
           })
 
-    },[review])
+    },[submitted])
     //Everything under here is from messages screen
     const [number,setNumber]=useState();
     const handleDelete= item =>{
