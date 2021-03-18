@@ -13,6 +13,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants'
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import { set } from "react-native-reanimated";
 const menuItems = [
   {
     title: "My Library",
@@ -42,6 +43,11 @@ function AccountScreen({navigation}) {
     var storage=firebase.storage().ref(firebase.auth().currentUser.uid).getDownloadURL()
     .then((url)=>{
       setImage(url)
+      firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid).set({
+        url
+      },{merge:true}).catch((error)=>{
+        console.log("error")
+      })
     }).catch((error)=>{
       Alert.alert("upload a profile picture")
       setImage(null)
@@ -109,6 +115,7 @@ function AccountScreen({navigation}) {
       console.log(error)
     });
   }
+  console.log(image)
   return (
     <Screen style={styles.screen}>
       <View style={styles.container}>
