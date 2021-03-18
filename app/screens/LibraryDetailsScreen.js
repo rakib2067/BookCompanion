@@ -130,7 +130,7 @@ function LibraryDetailsScreen({route},{navigation}) {
     const handleSubmit=()=>{
         let x=1
         const userName=name.name
-        uid=firebase.auth().currentUser.uid
+        var uid=firebase.auth().currentUser.uid
         var storage=firebase.storage().ref(firebase.auth().currentUser.uid).getDownloadURL()
         .then((url)=>{
             firebase.firestore().collection("books").doc(title).collection("reviews").doc(user).set({
