@@ -22,23 +22,35 @@ function ListingsScreen({navigation}) {
   const apiURL="https://www.googleapis.com/books/v1/volumes?q="
 
 
-  
+  cleanData=(data)=>{
+    const cleanedData=data.map((book)=>{
+      console.log(book)
+      if(book.volumeInfo.hasOwnProperty('publishedDate')=== false){
+        book.volumeInfo['publishedDate']='0000';
+      }
+      else if(book.volumeInfo.hasOwnProperty('imageLinks')=== false){
+        console.log(volumeInfo.imageLinks.thumbnail)
+        book.volumeInfo['imageLinks']={thumbnail:'https://vignette.wikia.nocookie.net/pandorahearts/images/a/ad/Not_available.jpg'}
+      }
+      else if(book.volumeInfo.hasOwnProperty('authors')=== false){
+        book.volumeInfo['authors']='Anonymous';
+      }
+      return book;
+    })
+      return cleanedData;
+   }
   const search=()=>{
     axios.get(apiURL+state.s+"&key="+apiKey+"&maxResults=10")
     .then(({data})=>{
-      let results=data.items;
-    
+      let pre=data.items;
+      results=cleanData(pre);
+      
       setState(prevState => {
         return {...prevState, results:results}
       })
     });
-
-
   }
-  const searchCheck=(results)=>{
-    results
 
-  }
   
   return (
     <Screen style={styles.screen}>
