@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Image, View, StyleSheet, ScrollView } from 'react-native';
+import { Image, View, StyleSheet, ScrollView, FlatList } from 'react-native';
 import AppText from '../components/AppText'
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
@@ -7,9 +7,15 @@ import Screen from '../components/Screen'
 import Icon from '../components/Icon';
 import * as firebase from 'firebase';
 import AppPicker from '../components/Picker';
+import ListDeleteAction from '../components/ListDeleteAction';
+import { ListItemSeparator } from '../components/lists';
 function ListDetailsScreen({route}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
+    const [number,setNumber]=useState();
+    const[reviews,setReviews]=useState({
+        results:[]
+    });
     const item=route.params;
     const title=item.volumeInfo.title;
     const author=item.volumeInfo.authors;
@@ -29,6 +35,16 @@ function ListDetailsScreen({route}) {
             value: 3,
           },
     ]
+    useEffect(()=>{
+        let Result=[]
+        firebase.firestore().collection("books").doc(title).collection("reviews").onSnapshot((snapshot)=>{
+            snapshot.docs.forEach(doc =>{
+              Result.push(doc.data())
+            })
+            setReviews({results: Result});
+          })
+
+    },[])
 
     useEffect(() =>{
         const currentRef=firebase.firestore().collection("users")
@@ -121,6 +137,23 @@ function ListDetailsScreen({route}) {
               items={categories}
               icon="apps" 
               placeholder="Add To Library"/>
+              <ListItem title="Reviews" />
+            <FlatList 
+            data={reviews.results}
+            renderItem={({item}) => 
+            <ListItem
+                title={item.userName}
+                subTitle={item.review}
+                
+                numberOfLines={number? number: 2}
+                onPress={()=>setNumber(10)}
+                renderRightActions={()=>
+                <ListDeleteAction onPress={()=>handleDelete(item)}/>}
+            />}
+        
+            ItemSeparatorComponent={ListItemSeparator}
+            
+        />
             
              </View>
              
