@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Image, View, StyleSheet, ScrollView, FlatList } from 'react-native';
+import { Image, View, StyleSheet, ScrollView, FlatList, Alert } from 'react-native';
 import AppText from '../components/AppText'
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
@@ -13,9 +13,39 @@ function ListDetailsScreen({route}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
     const [number,setNumber]=useState();
+    const[refresh,setRefresh]=useState(true);
     const[reviews,setReviews]=useState({
         results:[]
     });
+    const [name,setName]=useState({
+        exp:null,
+        level:null,
+        target:null
+      })
+      useEffect(()=>{
+        firebase.firestore().collection("points")
+        .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+          const Ref=doc.data();
+          setName({
+            exp:Ref.exp,
+            level:Ref.level,
+            target:Ref.target
+          })
+        })
+    
+      },[])
+      useEffect(()=>{
+        firebase.firestore().collection("points")
+        .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+          const Ref=doc.data();
+          setName({
+            exp:Ref.exp,
+            level:Ref.level,
+            target:Ref.target
+          })
+        })
+    
+      },[refresh])
     const item=route.params;
     const title=item.volumeInfo.title;
     const author=item.volumeInfo.authors;
@@ -98,6 +128,13 @@ function ListDetailsScreen({route}) {
                 console.error("Error removing document"+e)
             })
         }
+        if(name.level==1){
+            Alert.alert('Congratulations You just gained 10 points. Now go to your library')
+            firebase.firestore().collection("points")
+            .doc(firebase.auth().currentUser.uid).set({
+              exp:name.exp+10
+            },{merge:true}).then(setRefresh(!refresh))
+          }
         }
 
         

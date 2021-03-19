@@ -43,7 +43,7 @@ function ListingsScreen({navigation}) {
   },[refresh])
   useEffect(()=>{
     if(name.level==1&&name.exp==0){
-      Alert.alert('Congratulations You just gained 10 points')
+      Alert.alert('Congratulations You just gained 10 points. Now Search for a book')
       firebase.firestore().collection("points")
       .doc(firebase.auth().currentUser.uid).set({
         exp:10
@@ -63,7 +63,6 @@ function ListingsScreen({navigation}) {
 
   cleanData=(data)=>{
     const cleanedData=data.map((book)=>{
-      console.log(book)
       if(book.volumeInfo.hasOwnProperty('publishedDate')=== false){
         book.volumeInfo['publishedDate']='0000';
       }
@@ -83,7 +82,13 @@ function ListingsScreen({navigation}) {
     .then(({data})=>{
       let pre=data.items;
       results=cleanData(pre);
-      
+      if(name.level==1){
+        Alert.alert('Congratulations You just gained 10 points. Now Add a book to your library')
+        firebase.firestore().collection("points")
+        .doc(firebase.auth().currentUser.uid).set({
+          exp:name.exp+10
+        },{merge:true}).then(setRefresh(!refresh))
+      }
       setState(prevState => {
         return {...prevState, results:results}
       })
@@ -103,7 +108,6 @@ function ListingsScreen({navigation}) {
       onSubmitEditing={search} />    
       <FlatList
         data={state.results}
-        
         renderItem={({ item }) => (
           <Card
             title={item.volumeInfo.title}
