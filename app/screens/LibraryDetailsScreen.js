@@ -129,9 +129,17 @@ function LibraryDetailsScreen({route},{navigation}) {
         }
       },[category])
     const handleSubmit=()=>{
-        let x=1
         const userName=name.name
         var uid=firebase.auth().currentUser.uid
+        if(!name.url){
+            firebase.firestore().collection("books").doc(title).collection("reviews").doc(user).set({
+            uid,
+            userName,
+            review,
+        })
+        setSubmitted(!submitted)
+        }
+        else{
         var storage=firebase.storage().ref(firebase.auth().currentUser.uid).getDownloadURL()
         .then((url)=>{
             firebase.firestore().collection("books").doc(title).collection("reviews").doc(user).set({
@@ -140,8 +148,9 @@ function LibraryDetailsScreen({route},{navigation}) {
             review,
             url
         })
-        setSubmitted(!submitted)})
-        
+        setSubmitted(!submitted)
+    })
+    } 
     }
     
     useEffect(()=>{
@@ -161,6 +170,7 @@ function LibraryDetailsScreen({route},{navigation}) {
         firebase.firestore().collection("books").doc(title).collection("reviews").doc(item.uid).delete()
         .then(()=>{
             Alert.alert('Review Deleted')
+            setSubmitted(!submitted)
         }).catch((e)=>{
             Alert.alert('Error: '+e)
 
@@ -204,7 +214,7 @@ function LibraryDetailsScreen({route},{navigation}) {
             <ListItem 
                 title={item.userName}
                 subTitle={item.review}
-                image={{uri:item.url}}
+                image={{uri:item.url?item.url:"https://vignette.wikia.nocookie.net/pandorahearts/images/a/ad/Not_available.jpg"}}
                 numberOfLines={number? number: 2}
                 onPress={()=>setNumber(10)}
                 renderRightActions={()=>
