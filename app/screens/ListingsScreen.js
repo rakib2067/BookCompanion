@@ -11,6 +11,7 @@ import { FormField } from "../components/forms";
 import { State } from "react-native-gesture-handler";
 import * as firebase from 'firebase'
 function ListingsScreen({navigation}) {
+  const[refresh,setRefresh]=useState(true);
   const [name,setName]=useState({
     exp:null,
     level:null,
@@ -29,12 +30,24 @@ function ListingsScreen({navigation}) {
 
   },[])
   useEffect(()=>{
+    firebase.firestore().collection("points")
+    .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+      const Ref=doc.data();
+      setName({
+        exp:Ref.exp,
+        level:Ref.level,
+        target:Ref.target
+      })
+    })
+
+  },[refresh])
+  useEffect(()=>{
     if(name.level==1&&name.exp==0){
       Alert.alert('Congratulations You just gained 10 points')
       firebase.firestore().collection("points")
       .doc(firebase.auth().currentUser.uid).set({
         exp:10
-      },{merge:true})
+      },{merge:true}).then(setRefresh(!refresh))
     }
     //if level is above 1
   },[name])
