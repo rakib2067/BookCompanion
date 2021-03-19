@@ -26,6 +26,12 @@ function RegisterScreen() {
         email
 
       })
+    firebase.firestore().collection("points")
+    .doc(firebase.auth().currentUser.uid).set({
+      level:0,
+      exp:0,
+      target:100
+    })
     authContext.setUser(user);
     
 

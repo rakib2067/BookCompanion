@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, FlatList, StyleSheet } from "react-native";
 import axios from 'axios';
 
 import Card from "../components/Card";
@@ -11,7 +11,33 @@ import { FormField } from "../components/forms";
 import { State } from "react-native-gesture-handler";
 import * as firebase from 'firebase'
 function ListingsScreen({navigation}) {
+  const [name,setName]=useState({
+    exp:null,
+    level:null,
+    target:null
+  })
+  useEffect(()=>{
+    firebase.firestore().collection("points")
+    .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+      const Ref=doc.data();
+      setName({
+        exp:Ref.exp,
+        level:Ref.level,
+        target:Ref.target
+      })
+    })
 
+  },[])
+  useEffect(()=>{
+    if(name.level==1&&name.exp==0){
+      Alert.alert('Congratulations You just gained 10 points')
+      firebase.firestore().collection("points")
+      .doc(firebase.auth().currentUser.uid).set({
+        exp:10
+      },{merge:true})
+    }
+    //if level is above 1
+  },[name])
   const apiKey="AIzaSyAoTVNQJ8sweojgvXzz7TpZuCyJURTcgWA";
   const [state, setState]=useState({
     s: "",
