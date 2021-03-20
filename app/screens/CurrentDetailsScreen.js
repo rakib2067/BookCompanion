@@ -11,7 +11,6 @@ import Card from "../components/Card";
 import CardDeleteAction from "../components/CardDeleteAction";
 
 function CurrentDetailsScreen({navigation}) {
-  const[load,setLoad]=useState(true);
   const[deleted,setDeleted]=useState(true)
   const[current,setCurrent]= useState([]);
 
@@ -68,7 +67,6 @@ function CurrentDetailsScreen({navigation}) {
       Alert.alert('Error:' + e)
     })
   }
-
     return (
       <Screen > 
         <FlatList

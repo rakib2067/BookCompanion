@@ -11,24 +11,57 @@ import Card from "../components/Card";
 import CardDeleteAction from "../components/CardDeleteAction";
 
 function PastDetailsScreen({navigation}) {
-  const[state,setState]= useState({
-    results: [],
-    
-  });
-  useEffect(() =>{
-    let Result=[];
-    firebase.firestore().collection("users")
-    .doc(firebase.auth().currentUser.uid).collection("read").onSnapshot((snapshot)=>{
-      snapshot.docs.forEach(doc =>{
-        Result.push(doc.data())
-      })
-      setState({results: Result});
+  const[deleted,setDeleted]=useState(true)
+  const[past,setPast]= useState([]);
+
+  useEffect(()=>{
+    //can call a separate function to get all books
+    const subscriber=firebase.firestore().collection("users")
+    .doc(firebase.auth().currentUser.uid).collection("read").onSnapshot(snapshot=>{
+      const change=snapshot.docChanges()
+      change.forEach((change)=>{
+        if(change.type==="added"){//checks if any books were added into the db
+          let updateAdd =[]
+          firebase.firestore().collection("users")
+          .doc(firebase.auth().currentUser.uid).collection("read").get().then((snapshot)=>{
+            snapshot.forEach((doc)=>{
+              updateAdd.push(doc.data())
+            })
+             setPast(updateAdd)
+          })
+        }
+      }
+      
+      )
     })
+    
   },[])
+  useEffect(()=>{
+    const subscriber=firebase.firestore().collection("users")
+    .doc(firebase.auth().currentUser.uid).collection("read").onSnapshot(snapshot=>{
+      const change=snapshot.docChanges()
+      change.forEach((change)=>{
+        if(change.type==="removed"){
+          subscriber()
+          console.log("removed")//If doc was removed this will log
+          let update =[]
+          firebase.firestore().collection("users")
+          .doc(firebase.auth().currentUser.uid).collection("read").get().then((snapshot)=>{
+            snapshot.forEach((doc)=>{
+              update.push(doc.data())
+            })
+             setPast(update)
+          })
+        }
+      })
+    })
+
+  },[deleted])
   const handleDelete= item =>{
     firebase.firestore().collection("users")
     .doc(firebase.auth().currentUser.uid).collection("read").doc(item.title).delete()
     .then(()=>{
+      setDeleted(!deleted)
       Alert.alert('Removed from library')
     }).catch((e)=>{
       Alert.alert('Error:' + e)
@@ -37,7 +70,7 @@ function PastDetailsScreen({navigation}) {
     return (
       <Screen > 
         <FlatList
-        data={state.results}
+        data={past}
         renderItem={({item}) => (
           <Card
             title={item.title}
