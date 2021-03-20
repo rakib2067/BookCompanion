@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet } from "react-native";
+import { Alert, FlatList, StyleSheet, Text } from "react-native";
 import axios from 'axios';
 
 import Card from "../components/Card";
@@ -17,18 +17,16 @@ function ListingsScreen({navigation}) {
     level:null,
     target:null
   })
+  //initally gets points and sets it to the state variable
   useEffect(()=>{
-    firebase.firestore().collection("points")
-    .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
-      const Ref=doc.data();
-      setName({
-        exp:Ref.exp,
-        level:Ref.level,
-        target:Ref.target
-      })
-    })
+    const subscriber=firebase.firestore().collection("points")
+    .doc(firebase.auth().currentUser.uid).onSnapshot((doc) => {
+      console.log("Current data: ", doc.data());
+      setName(doc.data())
+  })
 
   },[])
+  //whenever refresh is triggered, refetches points and resets state variables 
   useEffect(()=>{
     firebase.firestore().collection("points")
     .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
@@ -41,13 +39,21 @@ function ListingsScreen({navigation}) {
     })
 
   },[refresh])
+  //after the initial values have been loaded up, do stuff, based on users current values
+  //Each time name is triggered, this effect will trigger  and sets refresh so that values are reset
   useEffect(()=>{
     if(name.level==1&&name.exp==0){
-      Alert.alert('Congratulations You just gained 10 points. Now go to the account screen')
       firebase.firestore().collection("points")
       .doc(firebase.auth().currentUser.uid).set({
         exp:10
       },{merge:true}).then(setRefresh(!refresh))
+      Alert.alert(
+        "Congratulations",
+        "You just earned 10 exp!",
+        [
+          { text: "Go to Account Screen", onPress: () => navigation.navigate(routes.ACCOUNT) }
+        ]
+      );
     }
     //if level is above 1
   },[name])
@@ -67,7 +73,6 @@ function ListingsScreen({navigation}) {
         book.volumeInfo['publishedDate']='0000';
       }
       else if(book.volumeInfo.hasOwnProperty('imageLinks')=== false){
-        console.log(volumeInfo.imageLinks.thumbnail)
         book.volumeInfo['imageLinks']={thumbnail:'https://vignette.wikia.nocookie.net/pandorahearts/images/a/ad/Not_available.jpg'}
       }
       else if(book.volumeInfo.hasOwnProperty('authors')=== false){
@@ -80,15 +85,16 @@ function ListingsScreen({navigation}) {
   const search=()=>{
     axios.get(apiURL+state.s+"&key="+apiKey+"&maxResults=10")
     .then(({data})=>{
-      let pre=data.items;
-      results=cleanData(pre);
-      if(name.level==1){
-        Alert.alert('Congratulations You just gained 10 points. Now Add a book to your library')
+      if(name.level==1&&name.exp==20){
+        Alert.alert('Congratulations You just gained 10 points')
         firebase.firestore().collection("points")
         .doc(firebase.auth().currentUser.uid).set({
           exp:name.exp+10
         },{merge:true}).then(setRefresh(!refresh))
       }
+      let pre=data.items;
+      results=cleanData(pre);
+     
       setState(prevState => {
         return {...prevState, results:results}
       })
@@ -105,7 +111,7 @@ function ListingsScreen({navigation}) {
       onChangeText={text => setState(prevState =>{
         return{...prevState, s:text}
       })}
-      onSubmitEditing={search} />    
+      onSubmitEditing={search} />  
       <FlatList
         data={state.results}
         renderItem={({ item }) => (

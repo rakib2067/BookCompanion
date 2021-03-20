@@ -1,7 +1,9 @@
 export default Object.freeze({
+    ACCOUNT:"Account",
     CURRENT_DETAILS:"CurrentDetails",
     FUTURE_DETAILS:"FutureDetails",
     LISTING_DETAILS:"ListingDetails",
+    LISTINGS:"Listings",
     LISTING_EDIT: "ListingEdit",
     LIBRARY_DETAILS:"LibraryDetails",
     LIBRARY_SCREEN:"Library",

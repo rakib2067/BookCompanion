@@ -38,6 +38,38 @@ function AccountScreen({navigation}) {
   const[state,setState]=useState();
   const[image,setImage]=useState(null);
   const[close,setClose]=useState(0)
+  const[refresh,setRefresh]=useState(true);
+  const [name,setName]=useState({
+    exp:null,
+    level:null,
+    target:null
+  })
+  //iniital useEffect fetches all the users points 
+  useEffect(()=>{
+    firebase.firestore().collection("points")
+    .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+      const Ref=doc.data();
+      setName({
+        exp:Ref.exp,
+        level:Ref.level,
+        target:Ref.target
+      })
+    })
+
+  },[])
+  //refreshes points values whenever something happens 
+  useEffect(()=>{
+    firebase.firestore().collection("points")
+    .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+      const Ref=doc.data();
+      setName({
+        exp:Ref.exp,
+        level:Ref.level,
+        target:Ref.target
+      })
+    })
+
+  },[refresh])
   
   useEffect(()=>{
     var storage=firebase.storage().ref(firebase.auth().currentUser.uid).getDownloadURL()
@@ -86,7 +118,19 @@ function AccountScreen({navigation}) {
       uploadImage(result.uri,firebase.auth().currentUser.uid)
       .then(()=>{
         setClose(close+1)
-        Alert.alert("Success")
+        if(name.level==1 && name.exp==10){
+          firebase.firestore().collection("points")
+        .doc(firebase.auth().currentUser.uid).set({
+          exp:name.exp+10
+        },{merge:true}).then(setRefresh(!refresh) )
+        Alert.alert(
+          "Congratulations",
+          "You just earned 10 exp!",
+          [
+            { text: "Search for a book", onPress: () => navigation.navigate(routes.LISTINGS) }
+          ]
+        );
+        }
       })
       .catch((error)=>{
         Alert.alert(error)
@@ -115,7 +159,6 @@ function AccountScreen({navigation}) {
       console.log(error)
     });
   }
-  console.log(image)
   return (
     <Screen style={styles.screen}>
       <View style={styles.container}>

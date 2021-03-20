@@ -6,12 +6,14 @@ import LibraryScreen from "../screens/LibraryScreen";
 import LibraryDetailsScreen from "../screens/LibraryDetailsScreen";
 import FutureDetailsScreen from "../screens/FutureDetailsScreen";
 import PastDetailsScreen from "../screens/PastDetailsScreen";
+import ListDetailsScreen from "../screens/ListDetailsScreen";
 
 const Stack= createStackNavigator();
 
 const LibraryNavigator= () =>(
     <Stack.Navigator>
          <Stack.Screen name="Library" component={LibraryScreen} options={{headerShown:false}}/>
+         <Stack.Screen name="ListingDetails" component={ListDetailsScreen} options={{headerShown:false}}/>
          <Stack.Screen name="CurrentDetails" component={CurrentDetailsScreen} options={{headerShown:false}}/>
          <Stack.Screen name="FutureDetails" component={FutureDetailsScreen} options={{headerShown:false}}/>
          <Stack.Screen name="PastDetails" component={PastDetailsScreen} options={{headerShown:false}}/>

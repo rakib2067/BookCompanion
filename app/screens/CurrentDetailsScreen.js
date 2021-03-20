@@ -15,7 +15,6 @@ function CurrentDetailsScreen({navigation}) {
   const[current,setCurrent]= useState([]);
 
   useEffect(()=>{
-    //can call a separate function to get all books
     const subscriber=firebase.firestore().collection("users")
     .doc(firebase.auth().currentUser.uid).collection("currently reading").onSnapshot(snapshot=>{
       const change=snapshot.docChanges()

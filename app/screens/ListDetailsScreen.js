@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Image, View, StyleSheet, ScrollView, FlatList, Alert } from 'react-native';
+import { Image, View, StyleSheet, ScrollView, FlatList, Alert, Text } from 'react-native';
 import AppText from '../components/AppText'
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
@@ -9,7 +9,8 @@ import * as firebase from 'firebase';
 import AppPicker from '../components/Picker';
 import ListDeleteAction from '../components/ListDeleteAction';
 import { ListItemSeparator } from '../components/lists';
-function ListDetailsScreen({route}) {
+import routes from '../navigation/routes';
+function ListDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
     const [number,setNumber]=useState();
@@ -20,18 +21,24 @@ function ListDetailsScreen({route}) {
         level:null,
         target:null
       })
-      useEffect(()=>{
-        firebase.firestore().collection("points")
-        .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
-          const Ref=doc.data();
-          setName({
-            exp:Ref.exp,
-            level:Ref.level,
-            target:Ref.target
-          })
+  // initially fetch all points from the db 
+  useEffect(()=>{
+      firebase.firestore().collection("points")
+      .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+        const Ref=doc.data();
+        setName({
+          exp:Ref.exp,
+          level:Ref.level,
+          target:Ref.target
         })
-    
-      },[])
+      })
+  },[])
+  useEffect(()=>{
+      if(name.level==1&&name.exp==30){
+        Alert.alert("Add the book to your library")
+      }
+  },[name])
+  //triggers on refresh
       useEffect(()=>{
         firebase.firestore().collection("points")
         .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
@@ -107,20 +114,56 @@ function ListDetailsScreen({route}) {
         
         currentRef.get().then((doc)=>{
             if (doc.exists){
-                console.log("doc exists")
                 setStorage({label:"currently reading", value:1})
+                if(name.level==1 && name.exp==30){
+                  firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:name.exp+10
+                },{merge:true}).then(setRefresh(!refresh) )
+                Alert.alert(
+                  "Congratulations",
+                  "You just earned 10 exp!",
+                  [
+                    { text: "go to library", onPress: () => navigation.navigate(routes.LIBRARY_SCREEN)}
+                  ]
+                );
+                }
             }
         })
         futureRef.get().then((doc)=>{
             if (doc.exists){
-                console.log("doc exists")
                 setStorage({label:"want to read", value:2})
+                if(name.level==1 && name.exp==30){
+                  firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:name.exp+10
+                },{merge:true}).then(setRefresh(!refresh) )
+                Alert.alert(
+                  "Congratulations",
+                  "You just earned 10 exp!",
+                  [
+                    { text: "go to library", onPress: () => navigation.navigate(routes.FUTURE_DETAILS)}
+                  ]
+                );
+                }
             }
         })
         pastRef.get().then((doc)=>{
             if (doc.exists){
-                console.log("doc exists")
                 setStorage({label:"read", value:3})
+                if(name.level==1 && name.exp==30){
+                  firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:name.exp+10
+                },{merge:true}).then(setRefresh(!refresh) )
+                Alert.alert(
+                  "Congratulations",
+                  "You just earned 10 exp!",
+                  [
+                    { text: "go to library", onPress: () => navigation.navigate(routes.PAST_DETAILS)}
+                  ]
+                );
+                }
             }
         })
     
