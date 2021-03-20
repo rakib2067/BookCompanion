@@ -12,29 +12,15 @@ import CardDeleteAction from "../components/CardDeleteAction";
 
 function CurrentDetailsScreen({navigation}) {
   const[load,setLoad]=useState(true);
+  const[deleted,setDeleted]=useState(true)
   const[current,setCurrent]= useState([]);
-  // function addedBook(doc){
-  //   console.log(doc.data())
-  // }
-  // useEffect(() =>{
-  //   let Result=[];
-  //   firebase.firestore().collection("users")
-  //   .doc(firebase.auth().currentUser.uid).collection("currently reading").get().then((snapshot)=>{
-  //     snapshot.docs.forEach(doc =>{
-  //       Result.push(doc.data())
-  //     })
-  //     setState(Result);
-  //     setLoad(!load)
-  //   })
-  // },[])
+
   useEffect(()=>{
     //can call a separate function to get all books
     const subscriber=firebase.firestore().collection("users")
     .doc(firebase.auth().currentUser.uid).collection("currently reading").onSnapshot(snapshot=>{
       const change=snapshot.docChanges()
       change.forEach((change)=>{
-        console.log(change.doc.data())//This shows every chnage thats happening
-        console.log(change.type)
         if(change.type==="added"){//checks if any books were added into the db
           let updateAdd =[]
           firebase.firestore().collection("users")
@@ -45,36 +31,38 @@ function CurrentDetailsScreen({navigation}) {
              setCurrent(updateAdd)
           })
         }
-        // if(change.type==="removed"){
-        //   subscriber()
-        //   console.log("removed")//If doc was removed this will log
-        //   let update =[]
-        //   firebase.firestore().collection("users")
-        //   .doc(firebase.auth().currentUser.uid).collection("currently reading").get().then((snapshot)=>{
-        //     snapshot.forEach((doc)=>{
-        //       update.push(doc.data())
-        //     })
-        //      setCurrent(update)
-        //   })
-        // }
       }
+      
       )
     })
     
   },[])
   useEffect(()=>{
+    const subscriber=firebase.firestore().collection("users")
+    .doc(firebase.auth().currentUser.uid).collection("currently reading").onSnapshot(snapshot=>{
+      const change=snapshot.docChanges()
+      change.forEach((change)=>{
+        if(change.type==="removed"){
+          subscriber()
+          console.log("removed")//If doc was removed this will log
+          let update =[]
+          firebase.firestore().collection("users")
+          .doc(firebase.auth().currentUser.uid).collection("currently reading").get().then((snapshot)=>{
+            snapshot.forEach((doc)=>{
+              update.push(doc.data())
+            })
+             setCurrent(update)
+          })
+        }
+      })
+    })
 
-  },[])
+  },[deleted])
   const handleDelete= item =>{
     firebase.firestore().collection("users")
     .doc(firebase.auth().currentUser.uid).collection("currently reading").doc(item.title).delete()
     .then(()=>{
-      const subscriber=firebase.firestore().collection("users")
-    .doc(firebase.auth().currentUser.uid).collection("currently reading").onSnapshot(snapshot=>{
-      const change=snapshot.docChanges()
-
-
-    })
+      setDeleted(!deleted)
       Alert.alert('Removed from library')
     }).catch((e)=>{
       Alert.alert('Error:' + e)
