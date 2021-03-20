@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { View, Image, StyleSheet,FlatList,Alert} from "react-native";
+import { View, Image, StyleSheet,FlatList,Alert,ToastAndroid} from "react-native";
 
 import colors from "../config/colors";
 import ListItem from "../components/lists/ListItem";
@@ -13,6 +13,52 @@ import CardDeleteAction from "../components/CardDeleteAction";
 function PastDetailsScreen({navigation}) {
   const[deleted,setDeleted]=useState(true)
   const[past,setPast]= useState([]);
+  const[refresh,setRefresh]=useState(true);
+  const[increase,setIncrease]=useState(true);
+  const [name,setName]=useState({
+      exp:null,
+      level:null,
+      target:null
+    })
+    useEffect(()=>{
+      firebase.firestore().collection("points")
+      .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+        const Ref=doc.data();
+        setName({
+          exp:Ref.exp,
+          level:Ref.level,
+          target:Ref.target
+        })
+      })
+    },[])
+    useEffect(()=>{
+      firebase.firestore().collection("points")
+      .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+        const Ref=doc.data();
+        setName({
+          exp:Ref.exp,
+          level:Ref.level,
+          target:Ref.target
+        })
+        setIncrease(!increase)
+      })
+    },[refresh])
+    useEffect(()=>{
+      if(name.level==1&&name.exp==name.target){
+        firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:0,
+                  level:2,
+                  target:100
+                },{merge:true}).then(setRefresh(!refresh))
+                ToastAndroid.show('You leveled up to Level 2!', ToastAndroid.LONG);
+      }
+    },[increase])
+    useEffect(()=>{
+      if(name.level==1&&name.exp==70){
+        Alert.alert("Delete the book from your library")
+      }
+  },[name])
 
   useEffect(()=>{
     //can call a separate function to get all books
@@ -62,7 +108,17 @@ function PastDetailsScreen({navigation}) {
     .doc(firebase.auth().currentUser.uid).collection("read").doc(item.title).delete()
     .then(()=>{
       setDeleted(!deleted)
-      Alert.alert('Removed from library')
+      if(name.level==1 && name.exp==70){
+        firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:name.exp+10
+                },{merge:true})
+                setRefresh(!refresh)
+                Alert.alert("Congratulations, You just earned 10xp!")
+        }
+        else{
+          Alert.alert('Removed from library')
+        }
     }).catch((e)=>{
       Alert.alert('Error:' + e)
     })

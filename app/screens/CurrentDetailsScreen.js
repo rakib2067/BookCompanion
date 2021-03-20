@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { View, Image, StyleSheet,FlatList, Alert } from "react-native";
+import { View, Image, StyleSheet,FlatList, Alert,ToastAndroid } from "react-native";
 
 import colors from "../config/colors";
 import ListItem from "../components/lists/ListItem";
@@ -14,6 +14,7 @@ function CurrentDetailsScreen({navigation}) {
   const[deleted,setDeleted]=useState(true)
   const[current,setCurrent]= useState([]);
   const[refresh,setRefresh]=useState(true);
+  const[increase,setIncrease]=useState(true);
   const [name,setName]=useState({
       exp:null,
       level:null,
@@ -30,6 +31,29 @@ function CurrentDetailsScreen({navigation}) {
         })
       })
     },[])
+    useEffect(()=>{
+      firebase.firestore().collection("points")
+      .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+        const Ref=doc.data();
+        setName({
+          exp:Ref.exp,
+          level:Ref.level,
+          target:Ref.target
+        })
+        setIncrease(!increase)
+      })
+    },[refresh])
+    useEffect(()=>{
+      if(name.level==1&&name.exp==name.target){
+        firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:0,
+                  level:2,
+                  target:100
+                },{merge:true}).then(setRefresh(!refresh))
+                ToastAndroid.show('You leveled up to Level 2!', ToastAndroid.LONG);
+      }
+    },[increase])
     useEffect(()=>{
       if(name.level==1&&name.exp==70){
         Alert.alert("Delete the book from your library")
@@ -56,6 +80,7 @@ function CurrentDetailsScreen({navigation}) {
     })
     
   },[])
+  console.log(name)
   //delete useeffect
   useEffect(()=>{
     const subscriber=firebase.firestore().collection("users")
@@ -87,7 +112,8 @@ function CurrentDetailsScreen({navigation}) {
         firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
                   exp:name.exp+10
-                },{merge:true}).then(setRefresh(!refresh))
+                },{merge:true})
+                setRefresh(!refresh)
                 Alert.alert("Congratulations, You just earned 10xp!")
         }
         else{
