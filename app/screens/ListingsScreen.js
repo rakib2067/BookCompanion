@@ -43,7 +43,7 @@ function ListingsScreen({navigation}) {
   },[refresh])
   useEffect(()=>{
     if(name.level==1&&name.exp==0){
-      Alert.alert('Congratulations You just gained 10 points. Now Search for a book')
+      Alert.alert('Congratulations You just gained 10 points. Now go to the account screen')
       firebase.firestore().collection("points")
       .doc(firebase.auth().currentUser.uid).set({
         exp:10
