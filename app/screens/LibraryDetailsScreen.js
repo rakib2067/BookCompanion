@@ -13,7 +13,7 @@ import AppTextInput from '../components/AppTextInput';
 import ListItemSeparator from '../components/ListItemSeparator';
 import ListDeleteAction from '../components/ListDeleteAction';
 
-function LibraryDetailsScreen({route},{navigation}) {
+function LibraryDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);//state for category
     const [storage, setStorage]=useState(0);
     const[deleted,setDeleted]=useState(true)//state to handle review changes - delete/modify
@@ -276,7 +276,7 @@ useEffect(()=>{
                 "Congratulations",
                 "You just earned 10 exp!",
                 [
-                  { text: "go to library", onPress: () => navigation.goBack()}
+                  { text: "go to library", onPress: () => navigation.navigate(routes.LIBRARY_SCREEN)}
                 ]
               );
             }

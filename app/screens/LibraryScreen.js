@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { StyleSheet,View,ActivityIndicator} from 'react-native';
+import { StyleSheet,View,ActivityIndicator, Alert} from 'react-native';
 import Icon from '../components/Icon';
 import { ListItem } from "../components/lists";
 import Screen from '../components/Screen';
@@ -13,6 +13,28 @@ function LibraryScreen({navigation}) {
   const [current,setCurrent]=useState();
   const [past,setPast]=useState();
   const [future,setFuture]=useState();
+    const [name,setName]=useState({
+        exp:null,
+        level:null,
+        target:null
+      })
+  // initially fetch all points from the db 
+  useEffect(()=>{
+      firebase.firestore().collection("points")
+      .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+        const Ref=doc.data();
+        setName({
+          exp:Ref.exp,
+          level:Ref.level,
+          target:Ref.target
+        })
+      })
+  },[])
+  useEffect(()=>{
+      if(name.level==1&&name.exp==70){
+        Alert.alert("Delete the book from your library")
+      }
+  },[name])
 
   useEffect(() =>{
   firebase.firestore().collection("users")
