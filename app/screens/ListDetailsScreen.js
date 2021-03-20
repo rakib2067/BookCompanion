@@ -14,8 +14,8 @@ function ListDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
     const [number,setNumber]=useState();
-    const[refresh,setRefresh]=useState(true);
     const[reviews,setReviews]=useState();
+    const[refresh,setRefresh]=useState(true);
     const [name,setName]=useState({
         exp:null,
         level:null,
@@ -116,7 +116,7 @@ function ListDetailsScreen({route,navigation}) {
             if (doc.exists){
                 setStorage({label:"currently reading", value:1})
                 if(name.level==1 && name.exp==30){
-                  firebase.firestore().collection("points")
+                firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
                   exp:name.exp+10
                 },{merge:true}).then(setRefresh(!refresh) )
@@ -142,7 +142,7 @@ function ListDetailsScreen({route,navigation}) {
                   "Congratulations",
                   "You just earned 10 exp!",
                   [
-                    { text: "go to library", onPress: () => navigation.navigate(routes.FUTURE_DETAILS)}
+                    { text: "go to library", onPress: () => navigation.navigate(routes.LIBRARY_SCREEN)}
                   ]
                 );
                 }
@@ -160,7 +160,7 @@ function ListDetailsScreen({route,navigation}) {
                   "Congratulations",
                   "You just earned 10 exp!",
                   [
-                    { text: "go to library", onPress: () => navigation.navigate(routes.PAST_DETAILS)}
+                    { text: "go to library", onPress: () => navigation.navigate(routes.LIBRARY_SCREEN)}
                   ]
                 );
                 }

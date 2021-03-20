@@ -23,6 +23,12 @@ function LibraryDetailsScreen({route},{navigation}) {
     const [name, setName]=useState();//state for current user
     const[review,setReview]=useState();//onChangetext
     const[reviews,setReviews]=useState([]);//reviews
+    const[refresh,setRefresh]=useState(true);
+    const [progress,setProgress]=useState({
+        exp:null,
+        level:null,
+        target:null
+      })
     const item=route.params;
     const title=item.title;
     const author=item.author;
@@ -42,6 +48,33 @@ function LibraryDetailsScreen({route},{navigation}) {
             value: 3,
           },
     ]
+    useEffect(()=>{
+      firebase.firestore().collection("points")
+      .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+        const Ref=doc.data();
+        setProgress({
+          exp:Ref.exp,
+          level:Ref.level,
+          target:Ref.target
+        })
+      })
+  },[])
+    useEffect(()=>{
+      firebase.firestore().collection("points")
+      .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+        const Ref=doc.data();
+        setProgress({
+          exp:Ref.exp,
+          level:Ref.level,
+          target:Ref.target
+        })
+      })
+  },[refresh])
+  useEffect(()=>{
+    if(progress.level==1&&progress.exp==40){
+      Alert.alert("Give a rating")
+    }
+},[name])
     useEffect(()=>{
         let Rate;
         const ratingRef=firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
@@ -65,8 +98,17 @@ function LibraryDetailsScreen({route},{navigation}) {
             firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
             .set({
                 rating
-            })   
-        } 
+            })
+              if(progress.level==1&&progress.exp==40){
+                firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:progress.exp+10
+                },{merge:true}).then(setRefresh(!refresh) )
+                Alert.alert(
+                  "Congratulations you have received 10 exp, now write a review"
+                );
+              }
+      } 
     },[rating])
     useEffect(() =>{
         const currentRef=firebase.firestore().collection("users")
@@ -185,8 +227,19 @@ useEffect(()=>{
             userName,
             review,
         })
-        setDeleted(!deleted)
+        if(progress.level==1&&progress.exp==50){
+          firebase.firestore().collection("points")
+          .doc(firebase.auth().currentUser.uid).set({
+            exp:progress.exp+10
+          },{merge:true}).then(setRefresh(!refresh) )
+          Alert.alert(
+            "Congratulations you have received 10 exp, now delete your review"
+          );
         }
+        setDeleted(!deleted)
+
+        }
+        
         else{
         var storage=firebase.storage().ref(firebase.auth().currentUser.uid).getDownloadURL()
         .then((url)=>{
@@ -196,6 +249,15 @@ useEffect(()=>{
             review,
             url
         })
+        if(progress.level==1&&progress.exp==50){
+          firebase.firestore().collection("points")
+          .doc(firebase.auth().currentUser.uid).set({
+            exp:progress.exp+10
+          },{merge:true}).then(setRefresh(!refresh) )
+          Alert.alert(
+            "Congratulations you have received 10 exp, now delete your review"
+          );
+        }
         setDeleted(!deleted)
     })
     } 
@@ -205,7 +267,19 @@ useEffect(()=>{
         firebase.firestore().collection("books").doc(title).collection("reviews").doc(item.uid).delete()
         .then(()=>{
             setDeleted(!deleted)
-            Alert.alert('Review Deleted')
+            if(progress.level==1&&progress.exp==60){
+              firebase.firestore().collection("points")
+              .doc(firebase.auth().currentUser.uid).set({
+                exp:progress.exp+10
+              },{merge:true}).then(setRefresh(!refresh) )
+              Alert.alert(
+                "Congratulations",
+                "You just earned 10 exp!",
+                [
+                  { text: "go to library", onPress: () => navigation.goBack()}
+                ]
+              );
+            }
         }).catch((e)=>{
             Alert.alert('Error: '+e)
         })}
