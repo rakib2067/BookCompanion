@@ -14,9 +14,7 @@ function ListDetailsScreen({route}) {
     const [storage, setStorage]=useState(0);
     const [number,setNumber]=useState();
     const[refresh,setRefresh]=useState(true);
-    const[reviews,setReviews]=useState({
-        results:[]
-    });
+    const[reviews,setReviews]=useState();
     const [name,setName]=useState({
         exp:null,
         level:null,
@@ -66,14 +64,34 @@ function ListDetailsScreen({route}) {
           },
     ]
     useEffect(()=>{
-        let Result=[]
-        firebase.firestore().collection("books").doc(title).collection("reviews").onSnapshot((snapshot)=>{
-            snapshot.docs.forEach(doc =>{
-              Result.push(doc.data())
+      //can call a separate function to get all books
+      const subscriber=firebase.firestore().collection("books")
+      .doc(title).collection("reviews").onSnapshot(snapshot=>{
+        const change=snapshot.docChanges()
+        change.forEach((change)=>{
+          if(change.type==="added"){//checks if any reviews were added into the db, loads all reviews
+            let updateAdd =[]
+            firebase.firestore().collection("books")
+            .doc(title).collection("reviews").get().then((snapshot)=>{
+              snapshot.forEach((doc)=>{
+                updateAdd.push(doc.data())
+              })
+               setReviews(updateAdd)
             })
-            setReviews({results: Result});
-          })
-
+          }
+          if(change.type==="modified"){//checks if any reviews were added into the db, loads all reviews
+            let updateAdd =[]
+            firebase.firestore().collection("books")
+            .doc(title).collection("reviews").get().then((snapshot)=>{
+              snapshot.forEach((doc)=>{
+                updateAdd.push(doc.data())
+              })
+               setReviews(updateAdd)
+            })
+          }
+        }
+        )
+      })
     },[])
 
     useEffect(() =>{
@@ -156,7 +174,7 @@ function ListDetailsScreen({route}) {
               placeholder="Add To Library"/>
               <ListItem title="Reviews" chevron={false}/>
             <FlatList 
-            data={reviews.results}
+            data={reviews}
             renderItem={({item}) => 
             <ListItem
                 title={item.userName}
