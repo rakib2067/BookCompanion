@@ -136,15 +136,9 @@ function ListDetailsScreen({route}) {
             },{merge:true}).then(setRefresh(!refresh))
           }
         }
-
-        
       },[category])
-   
-  
-    
     return (
         <ScrollView style={styles.container}>
-        
             <Image 
             style={styles.image}
             source={{uri: item.volumeInfo.imageLinks.thumbnail}} />

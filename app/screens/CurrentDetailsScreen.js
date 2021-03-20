@@ -36,6 +36,7 @@ function CurrentDetailsScreen({navigation}) {
     })
     
   },[])
+  //delete useeffect
   useEffect(()=>{
     const subscriber=firebase.firestore().collection("users")
     .doc(firebase.auth().currentUser.uid).collection("currently reading").onSnapshot(snapshot=>{

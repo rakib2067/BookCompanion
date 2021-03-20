@@ -14,18 +14,15 @@ import ListItemSeparator from '../components/ListItemSeparator';
 import ListDeleteAction from '../components/ListDeleteAction';
 
 function LibraryDetailsScreen({route},{navigation}) {
-    const [category, setCategory]=useState(0);
+    const [category, setCategory]=useState(0);//state for category
     const [storage, setStorage]=useState(0);
-    const [rating,setRating]=useState();
-    const [def,setDef]=useState();
-    const [name, setName]=useState();
-    const [submitted,setSubmitted]=useState(true);
-    const[review,setReview]=useState({
-        count:0
-    });
-    const[reviews,setReviews]=useState({
-        results:[]
-    });
+    const[deleted,setDeleted]=useState(true)//state to handle review changes - delete/modify
+    const [rating,setRating]=useState();//state for rating
+    const [number,setNumber]=useState();// 
+    const [def,setDef]=useState();//state for default rating
+    const [name, setName]=useState();//state for current user
+    const[review,setReview]=useState();//onChangetext
+    const[reviews,setReviews]=useState([]);//reviews
     const item=route.params;
     const title=item.title;
     const author=item.author;
@@ -51,11 +48,9 @@ function LibraryDetailsScreen({route},{navigation}) {
         ratingRef.get().then((doc)=>{
             if(doc.exists){
                 Rate=doc.data()
-                setDef(Rate)
-                
+                setDef(Rate)  
             }
         })
-
     },[])
     useEffect(()=>{
         firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid).get()
@@ -65,16 +60,13 @@ function LibraryDetailsScreen({route},{navigation}) {
     
       },[])
     useEffect(()=>{
-        
         if(rating){
             const x=rating;
             firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
             .set({
                 rating
-            })
-            
+            })   
         } 
-
     },[rating])
     useEffect(() =>{
         const currentRef=firebase.firestore().collection("users")
@@ -86,7 +78,6 @@ function LibraryDetailsScreen({route},{navigation}) {
         const pastRef=firebase.firestore().collection("users")
         .doc(firebase.auth().currentUser.uid).collection("read")
         .doc(title);
-        
         currentRef.get().then((doc)=>{
             if (doc.exists){
                 console.log("doc exists")
@@ -105,7 +96,6 @@ function LibraryDetailsScreen({route},{navigation}) {
                 setStorage({label:"read", value:3})
             }
         })
-    
         if(category)
         {
         firebase.firestore().collection("users")
@@ -128,7 +118,66 @@ function LibraryDetailsScreen({route},{navigation}) {
         }
         }
       },[category])
+
+//Reviews
+//gets reviews
+useEffect(()=>{
+    //can call a separate function to get all books
+    const subscriber=firebase.firestore().collection("books")
+    .doc(title).collection("reviews").onSnapshot(snapshot=>{
+      const change=snapshot.docChanges()
+      change.forEach((change)=>{
+        if(change.type==="added"){//checks if any reviews were added into the db, loads all reviews
+          let updateAdd =[]
+          firebase.firestore().collection("books")
+          .doc(title).collection("reviews").get().then((snapshot)=>{
+            snapshot.forEach((doc)=>{
+              updateAdd.push(doc.data())
+            })
+             setReviews(updateAdd)
+          })
+        }
+      }
+      
+      )
+    })
+  },[])
+  //Delete useEffect
+  useEffect(()=>{
+    const subscriber=firebase.firestore().collection("books")
+    .doc(title).collection("reviews").onSnapshot(snapshot=>{
+      const change=snapshot.docChanges()
+      change.forEach((change)=>{
+        if(change.type==="removed"){
+          subscriber()
+          console.log("removed")//If doc was removed this will log
+          let update =[]
+          firebase.firestore().collection("books")
+          .doc(title).collection("reviews").get().then((snapshot)=>{
+            snapshot.forEach((doc)=>{
+              update.push(doc.data())
+            })
+             setReviews(update)
+          })
+        }
+        else if(change.type==="modified"){
+            subscriber()
+          console.log("modified")//If doc was modified this will log
+          let update =[]
+          firebase.firestore().collection("books")
+          .doc(title).collection("reviews").get().then((snapshot)=>{
+            snapshot.forEach((doc)=>{
+              update.push(doc.data())
+            })
+             setReviews(update)
+          })
+        }
+      })
+    })
+  },[deleted])
+    //Event handlers
     const handleSubmit=()=>{
+        //first check if users
         const userName=name.name
         var uid=firebase.auth().currentUser.uid
         if(!name.url){
@@ -137,7 +186,7 @@ function LibraryDetailsScreen({route},{navigation}) {
             userName,
             review,
         })
-        setSubmitted(!submitted)
+        setDeleted(!deleted)
         }
         else{
         var storage=firebase.storage().ref(firebase.auth().currentUser.uid).getDownloadURL()
@@ -148,37 +197,25 @@ function LibraryDetailsScreen({route},{navigation}) {
             review,
             url
         })
-        setSubmitted(!submitted)
+        setDeleted(!deleted)
     })
     } 
     }
-    
-    useEffect(()=>{
-        let Result=[]
-        firebase.firestore().collection("books").doc(title).collection("reviews").onSnapshot((snapshot)=>{
-            snapshot.docs.forEach(doc =>{
-              Result.push(doc.data())
-            })
-            setReviews({results: Result});
-          })
-
-    },[submitted])
-    //Everything under here is from messages screen
-    const [number,setNumber]=useState();
     const handleDelete= item =>{
         if(item.uid==firebase.auth().currentUser.uid){
         firebase.firestore().collection("books").doc(title).collection("reviews").doc(item.uid).delete()
         .then(()=>{
+            setDeleted(!deleted)
             Alert.alert('Review Deleted')
-            setSubmitted(!submitted)
         }).catch((e)=>{
             Alert.alert('Error: '+e)
-
         })}
         else{
             Alert.alert('You do not have permission to remove this document')
         }
     };
+
+
     return (
         <ScrollView>
             <Image 
@@ -209,7 +246,7 @@ function LibraryDetailsScreen({route},{navigation}) {
             onChangeText={text => setReview(text)}
             />
             <FlatList 
-            data={reviews.results}
+            data={reviews}
             renderItem={({item}) => 
             <ListItem 
                 title={item.userName}
