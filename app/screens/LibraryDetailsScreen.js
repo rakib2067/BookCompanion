@@ -243,6 +243,10 @@ useEffect(()=>{
     //Event handlers
     const handleSubmit=()=>{
         //first check if users
+        var gibberish=require('gibberish-detector')
+        var tester=gibberish.detect(review)
+        console.log(tester)
+        if(tester>80){
         const userName=name.name
         var uid=firebase.auth().currentUser.uid
         if(!name.url){
@@ -284,7 +288,10 @@ useEffect(()=>{
         }
         setDeleted(!deleted)
     })
-    } 
+    } }
+    else{
+      Alert.alert('This Review is not valid')
+    }
     }
     const handleDelete= item =>{
         if(item.uid==firebase.auth().currentUser.uid){
