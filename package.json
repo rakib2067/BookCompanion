@@ -24,6 +24,7 @@
     "expo-status-bar": "~1.0.3",
     "firebase": "7.9.0",
     "formik": "^2.2.6",
+    "gibberish-detective": "^1.0.1",
     "gibberish-detector": "^1.0.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",

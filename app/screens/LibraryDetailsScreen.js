@@ -243,10 +243,11 @@ useEffect(()=>{
     //Event handlers
     const handleSubmit=()=>{
         //first check if users
-        var gibberish=require('gibberish-detector')
-        var tester=gibberish.detect(review)
-        console.log(tester)
-        if(tester>80){
+        const words = require("gibberish-detective")({useCache: false});
+        words.set("useCache", true)
+        var tester=words.detect(review)
+        console.log(tester,"IS IT")
+        if(tester==false){
         const userName=name.name
         var uid=firebase.auth().currentUser.uid
         if(!name.url){
@@ -263,6 +264,44 @@ useEffect(()=>{
           Alert.alert(
             "Congratulations you have received 10 exp, now delete your review"
           );
+        }
+        else if(progress.level!==1){
+          if(review.length>100){
+            firebase.firestore().collection("points")
+          .doc(firebase.auth().currentUser.uid).set({
+            exp:progress.exp+50
+          },{merge:true}).then(setRefresh(!refresh) )
+          Alert.alert(
+            "Congratulations you have received 50 exp"
+          );
+          }
+          else if(review.length>50){
+            firebase.firestore().collection("points")
+          .doc(firebase.auth().currentUser.uid).set({
+            exp:progress.exp+30
+          },{merge:true}).then(setRefresh(!refresh) )
+          Alert.alert(
+            "Congratulations you have received 30 exp"
+          );
+          }
+          else if(review.length>25){
+            firebase.firestore().collection("points")
+          .doc(firebase.auth().currentUser.uid).set({
+            exp:progress.exp+20
+          },{merge:true}).then(setRefresh(!refresh) )
+          Alert.alert(
+            "Congratulations you have received 20 exp"
+          );
+          }else{
+            firebase.firestore().collection("points")
+            .doc(firebase.auth().currentUser.uid).set({
+              exp:progress.exp+15
+            },{merge:true}).then(setRefresh(!refresh) )
+            Alert.alert(
+              "Congratulations you have received 15 exp"
+            );
+
+          }
         }
         setDeleted(!deleted)
 
@@ -285,6 +324,44 @@ useEffect(()=>{
           Alert.alert(
             "Congratulations you have received 10 exp, now delete your review"
           );
+        }
+        else if(progress.level!==1){
+          if(review.length>100){
+            firebase.firestore().collection("points")
+          .doc(firebase.auth().currentUser.uid).set({
+            exp:progress.exp+50
+          },{merge:true}).then(setRefresh(!refresh) )
+          Alert.alert(
+            "Congratulations you have received 50 exp"
+          );
+          }
+          else if(review.length>50){
+            firebase.firestore().collection("points")
+          .doc(firebase.auth().currentUser.uid).set({
+            exp:progress.exp+30
+          },{merge:true}).then(setRefresh(!refresh) )
+          Alert.alert(
+            "Congratulations you have received 30 exp"
+          );
+          }
+          else if(review.length>25){
+            firebase.firestore().collection("points")
+          .doc(firebase.auth().currentUser.uid).set({
+            exp:progress.exp+20
+          },{merge:true}).then(setRefresh(!refresh) )
+          Alert.alert(
+            "Congratulations you have received 20 exp"
+          );
+          }else{
+            firebase.firestore().collection("points")
+            .doc(firebase.auth().currentUser.uid).set({
+              exp:progress.exp+15
+            },{merge:true}).then(setRefresh(!refresh) )
+            Alert.alert(
+              "Congratulations you have received 15 exp"
+            );
+
+          }
         }
         setDeleted(!deleted)
     })
