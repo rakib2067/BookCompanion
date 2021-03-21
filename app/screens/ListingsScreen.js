@@ -32,7 +32,6 @@ function ListingsScreen({navigation}) {
     firebase.firestore().collection("points")
     .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
       const Ref=doc.data();
-      console.log(Ref+"REF")
       setName({
         exp:Ref.exp,
         level:Ref.level,

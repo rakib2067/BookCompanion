@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Image, View, StyleSheet, ScrollView, FlatList, Alert, Text } from 'react-native';
+import { Image, View, StyleSheet, ScrollView, FlatList, Alert, Text, ToastAndroid } from 'react-native';
 import AppText from '../components/AppText'
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
@@ -15,6 +15,7 @@ function ListDetailsScreen({route,navigation}) {
     const [storage, setStorage]=useState(0);
     const [number,setNumber]=useState();
     const[reviews,setReviews]=useState();
+    const[levelUp,setLevelup]=useState(true);
     const[refresh,setRefresh]=useState(true);
     const [name,setName]=useState({
         exp:null,
@@ -48,9 +49,25 @@ function ListDetailsScreen({route,navigation}) {
             level:Ref.level,
             target:Ref.target
           })
+          setLevelup(!levelUp)
         })
     
       },[refresh])
+      useEffect(()=>{
+        console.log(name)
+        if(name.level>1)
+        {if(name.exp>=name.target){
+          firebase.firestore().collection("points")
+                    .doc(firebase.auth().currentUser.uid).set({
+                      exp:0,
+                      level:name.level+1,
+                      target:name.target*1.25
+                    },{merge:true}).then(setRefresh(!refresh))
+                    ToastAndroid.show('You leveled up to Level: '+(name.level+1)+"!", ToastAndroid.LONG);
+                    //Now we test if this works levelling them up in real time
+        }}
+    
+      },[levelUp])
     const item=route.params;
     const title=item.volumeInfo.title;
     const author=item.volumeInfo.authors;
@@ -128,6 +145,15 @@ function ListDetailsScreen({route,navigation}) {
                   ]
                 );
                 }
+                else{
+                  firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:name.exp+10
+                },{merge:true}).then(setRefresh(!refresh) )
+                Alert.alert(
+                  "Congratulations, you just earned 10 exp!");
+
+                }
             }
         })
         futureRef.get().then((doc)=>{
@@ -146,6 +172,15 @@ function ListDetailsScreen({route,navigation}) {
                   ]
                 );
                 }
+                else{
+                  firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:name.exp+10
+                },{merge:true}).then(setRefresh(!refresh) )
+                Alert.alert(
+                  "Congratulations, you just earned 10 exp!");
+
+                }
             }
         })
         pastRef.get().then((doc)=>{
@@ -163,6 +198,15 @@ function ListDetailsScreen({route,navigation}) {
                     { text: "go to library", onPress: () => navigation.navigate(routes.LIBRARY_SCREEN)}
                   ]
                 );
+                }
+                else{
+                  firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:name.exp+10
+                },{merge:true}).then(setRefresh(!refresh) )
+                Alert.alert(
+                  "Congratulations, you just earned 10 exp!");
+
                 }
             }
         })
