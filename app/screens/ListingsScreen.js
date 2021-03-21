@@ -12,6 +12,7 @@ import { State } from "react-native-gesture-handler";
 import * as firebase from 'firebase'
 function ListingsScreen({navigation}) {
   const[refresh,setRefresh]=useState(true);
+  const[levelUp,setLevelup]=useState(true);
   const [name,setName]=useState({
     exp:null,
     level:null,
@@ -21,7 +22,7 @@ function ListingsScreen({navigation}) {
   useEffect(()=>{
     const subscriber=firebase.firestore().collection("points")
     .doc(firebase.auth().currentUser.uid).onSnapshot((doc) => {
-      console.log("Current data: ", doc.data());
+    
       setName(doc.data())
   })
 
@@ -31,14 +32,31 @@ function ListingsScreen({navigation}) {
     firebase.firestore().collection("points")
     .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
       const Ref=doc.data();
+      console.log(Ref+"REF")
       setName({
         exp:Ref.exp,
         level:Ref.level,
         target:Ref.target
       })
+      setLevelup(!levelUp)
     })
-
+    //after adding points we set name here and want to trigger a function which will check levels
   },[refresh])
+  useEffect(()=>{
+    console.log(name)
+    if(name.level>1)
+    {if(name.exp>=name.target){
+      firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:0,
+                  level:name.level+1,
+                  target:name.target*1.25
+                },{merge:true}).then(setRefresh(!refresh))
+                ToastAndroid.show('You leveled up to Level: '+(name.level+1)+"!", ToastAndroid.LONG);
+                //Now we test if this works levelling them up in real time
+    }}
+
+  },[levelUp])
   //after the initial values have been loaded up, do stuff, based on users current values
   //Each time name is triggered, this effect will trigger  and sets refresh so that values are reset
   useEffect(()=>{
@@ -91,6 +109,13 @@ function ListingsScreen({navigation}) {
         .doc(firebase.auth().currentUser.uid).set({
           exp:name.exp+10
         },{merge:true}).then(setRefresh(!refresh))
+      }
+      else if(name.level!==1){
+        Alert.alert('Congratulations You just gained 5 points')
+        firebase.firestore().collection("points")
+        .doc(firebase.auth().currentUser.uid).set({
+          exp:name.exp+5
+        },{merge:true}).then(setRefresh(!refresh))//this should check the exp and level 
       }
       let pre=data.items;
       results=cleanData(pre);
