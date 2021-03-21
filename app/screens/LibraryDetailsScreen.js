@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Image, View, StyleSheet, ScrollView, Alert, FlatList } from 'react-native';
+import { Image, View, StyleSheet, ScrollView, Alert, FlatList, ToastAndroid } from 'react-native';
 import AppText from '../components/AppText'
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
@@ -24,6 +24,7 @@ function LibraryDetailsScreen({route,navigation}) {
     const[review,setReview]=useState();//onChangetext
     const[reviews,setReviews]=useState([]);//reviews
     const[refresh,setRefresh]=useState(true);
+    const[levelUp,setLevelup]=useState(true);
     const [progress,setProgress]=useState({
         exp:null,
         level:null,
@@ -68,8 +69,22 @@ function LibraryDetailsScreen({route,navigation}) {
           level:Ref.level,
           target:Ref.target
         })
+        setLevelup(!levelUp)
       })
   },[refresh])
+  useEffect(()=>{
+    if(progress.level>1)
+    {if(progress.exp>=progress.target){
+      firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:0,
+                  level:progress.level+1,
+                  target:progress.target*1.25
+                },{merge:true}).then(setRefresh(!refresh))
+                ToastAndroid.show('You leveled up to Level: '+(progress.level+1)+"!", ToastAndroid.LONG);
+                //Now we test if this works levelling them up in real time
+    }}
+  },[levelUp])
   useEffect(()=>{
     if(progress.level==1&&progress.exp==40){
       Alert.alert("Give a rating")
@@ -106,6 +121,15 @@ function LibraryDetailsScreen({route,navigation}) {
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
                   "Congratulations you have received 10 exp, now write a review"
+                );
+              }
+              else if(progress.level!==1){
+                firebase.firestore().collection("points")
+                .doc(firebase.auth().currentUser.uid).set({
+                  exp:progress.exp+20
+                },{merge:true}).then(setRefresh(!refresh) )
+                Alert.alert(
+                  "Congratulations you have received 20 exp"
                 );
               }
       } 

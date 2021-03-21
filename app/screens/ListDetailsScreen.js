@@ -54,7 +54,6 @@ function ListDetailsScreen({route,navigation}) {
     
       },[refresh])
       useEffect(()=>{
-        console.log(name)
         if(name.level>1)
         {if(name.exp>=name.target){
           firebase.firestore().collection("points")
