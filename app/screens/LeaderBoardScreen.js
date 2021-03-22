@@ -6,6 +6,7 @@ import Screen from '../components/Screen';
 import ListItem from '../components/ListItem';
 function LeaderBoardScreen(props) {
     const[data,setData]=useState([])
+    const[state,setState]=useState('total')
     useEffect(()=>{
         //can call a separate function to get all books
         const subscriber=firebase.firestore().collection("points")
@@ -22,19 +23,37 @@ function LeaderBoardScreen(props) {
                  setData(updateAdd)
               })
             }
+            else if(change.type==="modified"){
+            console.log("modified")//If doc was modified this will log
+            let update =[]
+            firebase.firestore().collection("points")
+            .get().then((snapshot)=>{
+              snapshot.forEach((doc)=>{
+                update.push(doc.data())
+              })
+               setData(update)
+            })
+          }
           }
           )
         })
       },[])
-      console.log(data)
+      const handlePress= ()=>{
+        if(state=="total"){
+          setState('level')
+        }
+        else{
+          setState("total")
+        }
+
+      }
     return (
         <Screen>
-        <ListItem title="Leaderboards"/>
+        <ListItem title="Leaderboards" onPress={handlePress}/>
         <LeaderBoard
         data={data}
-        sortBy='total'
+        sortBy={state}
         labelBy='name'
-        levelBy='level'
         icon='url' />
         </Screen>
         

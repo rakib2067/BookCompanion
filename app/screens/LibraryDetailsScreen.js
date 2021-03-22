@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Image, View, StyleSheet, ScrollView, Alert, FlatList, ToastAndroid } from 'react-native';
+import { Image, View, StyleSheet, ScrollView, Alert, FlatList, ToastAndroid, Vibration } from 'react-native';
 import AppText from '../components/AppText'
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
@@ -85,6 +85,7 @@ function LibraryDetailsScreen({route,navigation}) {
                   target:progress.target*1.25,
                   total:progress.total+progress.target
                 },{merge:true}).then(setRefresh(!refresh))
+                Vibration.vibrate()
                 ToastAndroid.show('You leveled up to Level: '+(progress.level+1)+"!", ToastAndroid.LONG);
                 //Now we test if this works levelling them up in real time
     }}
@@ -130,7 +131,8 @@ function LibraryDetailsScreen({route,navigation}) {
               else if(progress.level!==1){
                 firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
-                  exp:progress.exp+20
+                  exp:progress.exp+20,
+                  total:progress.total+20
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
                   "Congratulations you have received 20 exp"
@@ -273,7 +275,8 @@ useEffect(()=>{
           if(review.length>100){
             firebase.firestore().collection("points")
           .doc(firebase.auth().currentUser.uid).set({
-            exp:progress.exp+50
+            exp:progress.exp+50,
+            total:progress.total+50
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
             "Congratulations you have received 50 exp"
@@ -282,7 +285,8 @@ useEffect(()=>{
           else if(review.length>50){
             firebase.firestore().collection("points")
           .doc(firebase.auth().currentUser.uid).set({
-            exp:progress.exp+30
+            exp:progress.exp+30,
+            total:progress.total+30
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
             "Congratulations you have received 30 exp"
@@ -291,7 +295,8 @@ useEffect(()=>{
           else if(review.length>25){
             firebase.firestore().collection("points")
           .doc(firebase.auth().currentUser.uid).set({
-            exp:progress.exp+20
+            exp:progress.exp+20,
+            total:progress.total+20
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
             "Congratulations you have received 20 exp"
@@ -299,7 +304,8 @@ useEffect(()=>{
           }else{
             firebase.firestore().collection("points")
             .doc(firebase.auth().currentUser.uid).set({
-              exp:progress.exp+15
+              exp:progress.exp+15,
+              total:progress.total+15
             },{merge:true}).then(setRefresh(!refresh) )
             Alert.alert(
               "Congratulations you have received 15 exp"
@@ -333,7 +339,8 @@ useEffect(()=>{
           if(review.length>100){
             firebase.firestore().collection("points")
           .doc(firebase.auth().currentUser.uid).set({
-            exp:progress.exp+50
+            exp:progress.exp+50,
+            total:progress.total+50
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
             "Congratulations you have received 50 exp"
@@ -342,7 +349,8 @@ useEffect(()=>{
           else if(review.length>50){
             firebase.firestore().collection("points")
           .doc(firebase.auth().currentUser.uid).set({
-            exp:progress.exp+30
+            exp:progress.exp+30,
+            total:progress.total+30
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
             "Congratulations you have received 30 exp"
@@ -351,7 +359,8 @@ useEffect(()=>{
           else if(review.length>25){
             firebase.firestore().collection("points")
           .doc(firebase.auth().currentUser.uid).set({
-            exp:progress.exp+20
+            exp:progress.exp+20,
+            total:progress.total+20
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
             "Congratulations you have received 20 exp"
@@ -359,7 +368,8 @@ useEffect(()=>{
           }else{
             firebase.firestore().collection("points")
             .doc(firebase.auth().currentUser.uid).set({
-              exp:progress.exp+15
+              exp:progress.exp+15,
+              total:progress.total+15
             },{merge:true}).then(setRefresh(!refresh) )
             Alert.alert(
               "Congratulations you have received 15 exp"

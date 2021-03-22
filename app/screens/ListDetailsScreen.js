@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Image, View, StyleSheet, ScrollView, FlatList, Alert, Text, ToastAndroid } from 'react-native';
+import { Image, View, StyleSheet, ScrollView, FlatList, Alert, Text, ToastAndroid, Vibration } from 'react-native';
 import AppText from '../components/AppText'
 import colors from '../config/colors';
 import ListItem from '../components/ListItem';
@@ -66,6 +66,7 @@ function ListDetailsScreen({route,navigation}) {
                       target:name.target*1.25,
                       total:name.total+name.target
                     },{merge:true}).then(setRefresh(!refresh))
+                    Vibration.vibrate()
                     ToastAndroid.show('You leveled up to Level: '+(name.level+1)+"!", ToastAndroid.LONG);
                     //Now we test if this works levelling them up in real time
         }}
@@ -151,7 +152,8 @@ function ListDetailsScreen({route,navigation}) {
                 else{
                   firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
-                  exp:name.exp+10
+                  exp:name.exp+10,
+                  total:name.total+10
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
                   "Congratulations, you just earned 10 exp!");
@@ -178,7 +180,8 @@ function ListDetailsScreen({route,navigation}) {
                 else{
                   firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
-                  exp:name.exp+10
+                  exp:name.exp+10,
+                  total:name.total+10
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
                   "Congratulations, you just earned 10 exp!");
@@ -205,7 +208,8 @@ function ListDetailsScreen({route,navigation}) {
                 else{
                   firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
-                  exp:name.exp+10
+                  exp:name.exp+10,
+                  total:name.total+10
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
                   "Congratulations, you just earned 10 exp!");

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text , ToastAndroid} from "react-native";
+import { Alert, FlatList, StyleSheet, Text , ToastAndroid, Vibration} from "react-native";
 import axios from 'axios';
 
 import Card from "../components/Card";
@@ -54,6 +54,7 @@ function ListingsScreen({navigation}) {
                   target:name.target*1.25,
                   total:name.total+name.target 
                 },{merge:true}).then(setRefresh(!refresh))
+                Vibration.vibrate()
                 ToastAndroid.show('You leveled up to Level: '+(name.level+1)+"!", ToastAndroid.LONG);
                 //Now we test if this works levelling them up in real time
     }}
@@ -116,7 +117,8 @@ function ListingsScreen({navigation}) {
         Alert.alert('Congratulations You just gained 5 points')
         firebase.firestore().collection("points")
         .doc(firebase.auth().currentUser.uid).set({
-          exp:name.exp+5
+          exp:name.exp+5,
+          total:name.total+5
         },{merge:true}).then(setRefresh(!refresh))//this should check the exp and level 
       }
       let pre=data.items;
