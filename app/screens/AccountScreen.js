@@ -80,6 +80,9 @@ function AccountScreen({navigation}) {
       },{merge:true}).catch((error)=>{
         console.log("error")
       })
+      firebase.firestore().collection("points").doc(firebase.auth().currentUser.uid).set({
+        url:url
+      },{merge:true})
     }).catch((error)=>{
       Alert.alert("upload a profile picture")
       setImage(null)

@@ -20,7 +20,8 @@ function ListDetailsScreen({route,navigation}) {
     const [name,setName]=useState({
         exp:null,
         level:null,
-        target:null
+        target:null,
+        total:null
       })
   // initially fetch all points from the db 
   useEffect(()=>{
@@ -30,7 +31,8 @@ function ListDetailsScreen({route,navigation}) {
         setName({
           exp:Ref.exp,
           level:Ref.level,
-          target:Ref.target
+          target:Ref.target,
+          total:Ref.total
         })
       })
   },[])
@@ -47,7 +49,8 @@ function ListDetailsScreen({route,navigation}) {
           setName({
             exp:Ref.exp,
             level:Ref.level,
-            target:Ref.target
+            target:Ref.target,
+            total:Ref.total
           })
           setLevelup(!levelUp)
         })
@@ -60,7 +63,8 @@ function ListDetailsScreen({route,navigation}) {
                     .doc(firebase.auth().currentUser.uid).set({
                       exp:0,
                       level:name.level+1,
-                      target:name.target*1.25
+                      target:name.target*1.25,
+                      total:name.total+name.target
                     },{merge:true}).then(setRefresh(!refresh))
                     ToastAndroid.show('You leveled up to Level: '+(name.level+1)+"!", ToastAndroid.LONG);
                     //Now we test if this works levelling them up in real time

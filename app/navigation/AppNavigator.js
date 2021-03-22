@@ -7,6 +7,7 @@ import FeedNavigator from './FeedNavigator';
 import AccountNavigator from './AccountNavigator';
 import LibraryScreen from '../screens/LibraryScreen';
 import LibraryNavigator from './LibraryNavigator';
+import LeaderBoardScreen from '../screens/LeaderBoardScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,6 +23,12 @@ const AppNavigator = () => (
       options= {{
         tabBarIcon: ({color,size}) =>
         <MaterialCommunityIcons name="book-open-variant" color={color} size={size}/>
+      }}
+    />
+    <Tab.Screen name="Leaderboards" component={LeaderBoardScreen} 
+      options= {{
+        tabBarIcon: ({color,size}) =>
+        <MaterialCommunityIcons name="view-list" color={color} size={size}/>
       }}
     />
     <Tab.Screen name="Account" component={AccountNavigator} 

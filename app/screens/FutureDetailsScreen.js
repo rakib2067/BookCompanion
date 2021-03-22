@@ -49,7 +49,8 @@ function FutureDetailsScreen({navigation}) {
                 .doc(firebase.auth().currentUser.uid).set({
                   exp:0,
                   level:2,
-                  target:100
+                  target:100,
+                  total:100
                 },{merge:true}).then(setRefresh(!refresh))
                 ToastAndroid.show('You leveled up to Level 2!', ToastAndroid.LONG);
       }

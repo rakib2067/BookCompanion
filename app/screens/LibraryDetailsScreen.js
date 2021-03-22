@@ -28,7 +28,8 @@ function LibraryDetailsScreen({route,navigation}) {
     const [progress,setProgress]=useState({
         exp:null,
         level:null,
-        target:null
+        target:null,
+        total:null
       })
     const item=route.params;
     const title=item.title;
@@ -56,7 +57,8 @@ function LibraryDetailsScreen({route,navigation}) {
         setProgress({
           exp:Ref.exp,
           level:Ref.level,
-          target:Ref.target
+          target:Ref.target,
+          total:Ref.total
         })
       })
   },[])
@@ -67,7 +69,8 @@ function LibraryDetailsScreen({route,navigation}) {
         setProgress({
           exp:Ref.exp,
           level:Ref.level,
-          target:Ref.target
+          target:Ref.target,
+          total:Ref.total
         })
         setLevelup(!levelUp)
       })
@@ -79,7 +82,8 @@ function LibraryDetailsScreen({route,navigation}) {
                 .doc(firebase.auth().currentUser.uid).set({
                   exp:0,
                   level:progress.level+1,
-                  target:progress.target*1.25
+                  target:progress.target*1.25,
+                  total:progress.total+progress.target
                 },{merge:true}).then(setRefresh(!refresh))
                 ToastAndroid.show('You leveled up to Level: '+(progress.level+1)+"!", ToastAndroid.LONG);
                 //Now we test if this works levelling them up in real time

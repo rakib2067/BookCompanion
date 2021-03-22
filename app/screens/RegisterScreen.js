@@ -30,7 +30,9 @@ function RegisterScreen() {
     .doc(firebase.auth().currentUser.uid).set({
       level:1,
       exp:0,
-      target:80
+      target:80,
+      total:0,
+      name
     })
     authContext.setUser(user);
     
