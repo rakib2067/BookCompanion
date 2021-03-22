@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { View, Image, StyleSheet,FlatList,Alert,ToastAndroid} from "react-native";
+import { View, Image, StyleSheet,FlatList, Alert,ToastAndroid, Vibration } from "react-native";
 
 import colors from "../config/colors";
 import ListItem from "../components/lists/ListItem";
@@ -12,7 +12,7 @@ import CardDeleteAction from "../components/CardDeleteAction";
 
 function PastDetailsScreen({navigation}) {
   const[deleted,setDeleted]=useState(true)
-  const[past,setPast]= useState([]);
+  const[future,setFuture]= useState([]);
   const[refresh,setRefresh]=useState(true);
   const[increase,setIncrease]=useState(true);
   const [name,setName]=useState({
@@ -49,8 +49,10 @@ function PastDetailsScreen({navigation}) {
                 .doc(firebase.auth().currentUser.uid).set({
                   exp:0,
                   level:2,
-                  target:100
+                  target:100,
+                  total:100
                 },{merge:true}).then(setRefresh(!refresh))
+                Vibration.vibrate()
                 ToastAndroid.show('You leveled up to Level 2!', ToastAndroid.LONG);
       }
     },[increase])
@@ -73,7 +75,7 @@ function PastDetailsScreen({navigation}) {
             snapshot.forEach((doc)=>{
               updateAdd.push(doc.data())
             })
-             setPast(updateAdd)
+             setFuture(updateAdd)
           })
         }
       }
@@ -96,7 +98,7 @@ function PastDetailsScreen({navigation}) {
             snapshot.forEach((doc)=>{
               update.push(doc.data())
             })
-             setPast(update)
+             setFuture(update)
           })
         }
       })
@@ -126,7 +128,7 @@ function PastDetailsScreen({navigation}) {
     return (
       <Screen > 
         <FlatList
-        data={past}
+        data={future}
         renderItem={({item}) => (
           <Card
             title={item.title}

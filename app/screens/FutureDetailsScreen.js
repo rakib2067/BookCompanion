@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { View, Image, StyleSheet,FlatList, Alert,ToastAndroid } from "react-native";
+import { View, Image, StyleSheet,FlatList, Alert,ToastAndroid, Vibration } from "react-native";
 
 import colors from "../config/colors";
 import ListItem from "../components/lists/ListItem";
@@ -52,6 +52,7 @@ function FutureDetailsScreen({navigation}) {
                   target:100,
                   total:100
                 },{merge:true}).then(setRefresh(!refresh))
+                Vibration.vibrate()
                 ToastAndroid.show('You leveled up to Level 2!', ToastAndroid.LONG);
       }
     },[increase])

@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { View, Image, StyleSheet,FlatList, Alert,ToastAndroid } from "react-native";
+import { View, Image, StyleSheet,FlatList, Alert,ToastAndroid, Vibration } from "react-native";
 
 import colors from "../config/colors";
 import ListItem from "../components/lists/ListItem";
@@ -12,7 +12,7 @@ import CardDeleteAction from "../components/CardDeleteAction";
 
 function CurrentDetailsScreen({navigation}) {
   const[deleted,setDeleted]=useState(true)
-  const[current,setCurrent]= useState([]);
+  const[future,setFuture]= useState([]);
   const[refresh,setRefresh]=useState(true);
   const[increase,setIncrease]=useState(true);
   const [name,setName]=useState({
@@ -49,8 +49,10 @@ function CurrentDetailsScreen({navigation}) {
                 .doc(firebase.auth().currentUser.uid).set({
                   exp:0,
                   level:2,
-                  target:100
+                  target:100,
+                  total:100
                 },{merge:true}).then(setRefresh(!refresh))
+                Vibration.vibrate()
                 ToastAndroid.show('You leveled up to Level 2!', ToastAndroid.LONG);
       }
     },[increase])
@@ -59,7 +61,9 @@ function CurrentDetailsScreen({navigation}) {
         Alert.alert("Delete the book from your library")
       }
   },[name])
+
   useEffect(()=>{
+    //can call a separate function to get all books
     const subscriber=firebase.firestore().collection("users")
     .doc(firebase.auth().currentUser.uid).collection("currently reading").onSnapshot(snapshot=>{
       const change=snapshot.docChanges()
@@ -71,7 +75,7 @@ function CurrentDetailsScreen({navigation}) {
             snapshot.forEach((doc)=>{
               updateAdd.push(doc.data())
             })
-             setCurrent(updateAdd)
+             setFuture(updateAdd)
           })
         }
       }
@@ -80,8 +84,6 @@ function CurrentDetailsScreen({navigation}) {
     })
     
   },[])
-  console.log(name)
-  //delete useeffect
   useEffect(()=>{
     const subscriber=firebase.firestore().collection("users")
     .doc(firebase.auth().currentUser.uid).collection("currently reading").onSnapshot(snapshot=>{
@@ -96,7 +98,7 @@ function CurrentDetailsScreen({navigation}) {
             snapshot.forEach((doc)=>{
               update.push(doc.data())
             })
-             setCurrent(update)
+             setFuture(update)
           })
         }
       })
@@ -126,16 +128,16 @@ function CurrentDetailsScreen({navigation}) {
     return (
       <Screen > 
         <FlatList
-        data={current}
+        data={future}
         renderItem={({item}) => (
           <Card
             title={item.title}
             subTitle={item.author}
-            renderRightActions={()=>
-                <CardDeleteAction onPress={()=>handleDelete(item)}/>}
             image={item.image}
             onPress={() => navigation.navigate(routes.LIBRARY_DETAILS, item)}
             backgroundColor={colors.light}
+            renderRightActions={()=>
+                <CardDeleteAction onPress={()=>handleDelete(item)}/>}
           />
         )}
       />
