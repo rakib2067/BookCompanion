@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text , ToastAndroid, Vibration} from "react-native";
+import { Alert, FlatList, StyleSheet, Text , ToastAndroid, Vibration, Image,View} from "react-native";
 import axios from 'axios';
 
 import Card from "../components/Card";
@@ -10,9 +10,16 @@ import AppTextInput from "../components/AppTextInput";
 import { FormField } from "../components/forms";
 import { State } from "react-native-gesture-handler";
 import * as firebase from 'firebase'
+import * as Progress from 'react-native-progress'
+import ListItem from "../components/ListItem";
+import AppText from "../components/Text";
 function ListingsScreen({navigation}) {
   const[refresh,setRefresh]=useState(true);
   const[levelUp,setLevelup]=useState(true);
+  const[other,setOther]=useState({
+    name:null,
+    url:null
+  });
   const [name,setName]=useState({
     exp:null,
     level:null,
@@ -23,7 +30,9 @@ function ListingsScreen({navigation}) {
   useEffect(()=>{
     const subscriber=firebase.firestore().collection("points")
     .doc(firebase.auth().currentUser.uid).onSnapshot((doc) => {
-    
+      let data=doc.data()
+      setOther({name: data.name,
+                url:data.url})
       setName(doc.data())
   })
 
@@ -127,12 +136,30 @@ function ListingsScreen({navigation}) {
       setState(prevState => {
         return {...prevState, results:results}
       })
-    });
+    }).catch((error)=>{
+      Alert.alert("There was an error with your search")
+    })
   }
 
   
   return (
     <Screen style={styles.screen}>
+        <View style={styles.container}>
+        <Image style={styles.image}
+        source={{uri:other.url}}/>
+        <View style={styles.textContainer}>
+        <AppText style= {styles.title} numberOfLines={1}>{other.name}</AppText>
+        <Progress.Bar color={colors.primary} indeterminate={name.exp!==null?false:true} progress={name.exp/name.target}/>
+        <AppText style= {styles.subTitle}>{name.exp+"/"+name.target}</AppText>
+        </View>
+        <AppText style={{width: 35,
+        height: 25,
+        borderRadius: 25,
+        backgroundColor:colors.secondary,
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: 'center',}}>{name.level}</AppText>
+        </View>
     <AppTextInput 
       backgroundColor={"lightgrey"} 
       placeholder="Title/Author/ISBN"
@@ -140,7 +167,8 @@ function ListingsScreen({navigation}) {
       onChangeText={text => setState(prevState =>{
         return{...prevState, s:text}
       })}
-      onSubmitEditing={search} />  
+      onSubmitEditing={search} /> 
+      
       <FlatList
         data={state.results}
         renderItem={({ item }) => (
@@ -160,12 +188,42 @@ function ListingsScreen({navigation}) {
 const styles = StyleSheet.create({
   screen: {
     padding: 10,
-    backgroundColor: colors.medium,
+    backgroundColor: colors.light,
   },
   input:{
     backgroundColor:"red",
     flex:1
-  }
+  },
+  container:{
+    alignItems: "center",
+    flexDirection: 'row',
+    padding: 15,
+    backgroundColor: colors.white,
+    borderRadius:25
+},
+image:{
+    borderRadius: 35,
+    height: 70,
+    width: 70,
+    borderRadius: 35,
+    
+
+},
+title:{
+    fontWeight: "bold",
+
+
+},
+textContainer:{
+    marginLeft: 10,
+    justifyContent: "center",
+    flex:1
+
+},
+subTitle:{
+    color: colors.medium
+
+}
 });
 
 export default ListingsScreen;
