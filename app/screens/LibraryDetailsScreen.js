@@ -83,8 +83,8 @@ function LibraryDetailsScreen({route,navigation}) {
                 .doc(firebase.auth().currentUser.uid).set({
                   exp:0,
                   level:progress.level+1,
-                  target:progress.target*1.25,
-                  total:progress.total+progress.target
+                  target:Math.round(progress.target*1.25),
+                  total:Math.round(progress.total+progress.target)
                 },{merge:true}).then(setRefresh(!refresh))
                 Vibration.vibrate()
                 ToastAndroid.show('You leveled up to Level: '+(progress.level+1)+"!", ToastAndroid.LONG);

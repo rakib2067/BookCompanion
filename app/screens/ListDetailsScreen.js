@@ -88,8 +88,8 @@ function ListDetailsScreen({route,navigation}) {
                     .doc(firebase.auth().currentUser.uid).set({
                       exp:0,
                       level:name.level+1,
-                      target:name.target*1.25,
-                      total:name.total+name.target
+                      target:Math.round(name.target*1.25),
+                      total:Math.round(name.total+name.target)
                     },{merge:true}).then(setRefresh(!refresh))
                     Vibration.vibrate()
                     ToastAndroid.show('You leveled up to Level: '+(name.level+1)+"!", ToastAndroid.LONG);
