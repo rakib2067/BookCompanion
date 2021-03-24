@@ -16,6 +16,7 @@ import ListDeleteAction from '../components/ListDeleteAction';
 function LibraryDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);//state for category
     const [storage, setStorage]=useState(0);
+    const [average, setAverage]=useState(0);
     const[deleted,setDeleted]=useState(true)//state to handle review changes - delete/modify
     const [rating,setRating]=useState();//state for rating
     const [number,setNumber]=useState();// 
@@ -95,6 +96,7 @@ function LibraryDetailsScreen({route,navigation}) {
       Alert.alert("Give a rating")
     }
 },[name])
+
     useEffect(()=>{
         let Rate;
         const ratingRef=firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
@@ -190,7 +192,30 @@ function LibraryDetailsScreen({route,navigation}) {
         }
         }
       },[category])
-
+useEffect(()=>{
+  const ratingRef=firebase.firestore().collection("books").doc(title).collection("ratings").onSnapshot(snapshot=>{
+    const change=snapshot.docChanges()
+    change.forEach((change)=>{
+      if(change.type==="added"){
+        let updateAdd=[]
+        firebase.firestore().collection("books").doc(title).collection("ratings").get().then((snapshot)=>{
+          snapshot.forEach((doc)=>{
+            updateAdd.push(doc.data())
+          })
+          let avg=0
+          let count=0
+          updateAdd.forEach(rate=>{
+            avg=avg+rate.rating
+            count=count+1
+          })
+          console.log(count)
+          setAverage(avg/count)
+        })
+      }
+    })
+  })
+  
+})
 //Reviews
 //gets reviews
 useEffect(()=>{
@@ -419,6 +444,7 @@ useEffect(()=>{
             <View style={styles.detailsContainer}>
             <AppText style= {styles.title}>{item.title}</AppText>
             <AppText style={styles.author}>{item.author}</AppText>
+            <AppText style={styles.rating}>Average Rating: {average}/5</AppText>
             <View style={styles.listItem}>
             <View styles={styles.iconContainer}>
             <AppPicker 
@@ -484,12 +510,17 @@ const styles = StyleSheet.create({
         marginVertical: 5
         
     },
+    rating:{
+        color:colors.primary,
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginVertical: 5
+        
+    },
     listItem:{
         marginVertical: 30
     },
-    rating:{
-        
-    }
+    
   
     
 })
