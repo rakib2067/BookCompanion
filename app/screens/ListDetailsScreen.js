@@ -14,6 +14,7 @@ function ListDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
     const [number,setNumber]=useState();
+    const [average,setAverage]=useState(0);
     const[reviews,setReviews]=useState();
     const[levelUp,setLevelup]=useState(true);
     const[refresh,setRefresh]=useState(true);
@@ -36,6 +37,30 @@ function ListDetailsScreen({route,navigation}) {
         })
       })
   },[])
+  useEffect(()=>{
+    const ratingRef=firebase.firestore().collection("books").doc(title).collection("ratings").onSnapshot(snapshot=>{
+      const change=snapshot.docChanges()
+      change.forEach((change)=>{
+        if(change.type==="added"){
+          let updateAdd=[]
+          firebase.firestore().collection("books").doc(title).collection("ratings").get().then((snapshot)=>{
+            snapshot.forEach((doc)=>{
+              updateAdd.push(doc.data())
+            })
+            let avg=0
+            let count=0
+            updateAdd.forEach(rate=>{
+              avg=avg+rate.rating
+              count=count+1
+            })
+            console.log(count)
+            setAverage(avg/count)
+          })
+        }
+      })
+    })
+    
+  })
   useEffect(()=>{
       if(name.level==1&&name.exp==30){
         Alert.alert("Add the book to your library")
@@ -257,6 +282,7 @@ function ListDetailsScreen({route,navigation}) {
             <View style={styles.detailsContainer}>
             <AppText style= {styles.title}>{item.volumeInfo.title}</AppText>
             <AppText style={styles.author}>{item.volumeInfo.authors}</AppText>
+            <AppText style={styles.rating}>Average Rating: {average}/5</AppText>
             <View style={styles.listItem}>
             <View styles={styles.iconContainer}>
       
@@ -307,6 +333,13 @@ const styles = StyleSheet.create({
     },
     author:{
         color: colors.secondary,
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginVertical: 5
+        
+    },
+    rating:{
+        color: colors.primary,
         fontSize: 18,
         fontWeight: 'bold',
         marginVertical: 5
