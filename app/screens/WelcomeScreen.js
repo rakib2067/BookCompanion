@@ -2,6 +2,7 @@ import React from 'react';
 import {Image, ImageBackground, StyleSheet,Text,View} from "react-native";
 import App from '../../App.js';
 import AppButton from '../components/AppButton.js';
+import Icon from '../components/Icon.js';
 import colors from '../config/colors.js'
 import routes from '../navigation/routes.js';
 function WelcomeScreen({navigation}) {
@@ -12,9 +13,8 @@ function WelcomeScreen({navigation}) {
         style={styles.background}
         source={require('../assets/books.jpg')} >
          <View style= {styles.logoContainer}>
-         <Image
-         style={styles.logo}
-         source={require('../assets/logo-red.png')} />
+         
+         <Icon iconColor={colors.primary} size={200} backgroundColor="transparent" name="book-multiple-outline"/>
          <Text style={styles.slogan}>Making Reading Fun Again </Text>
          </View>
          <View

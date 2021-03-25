@@ -1,10 +1,12 @@
 import React,{useContext} from "react";
-import { StyleSheet, Image, Alert } from "react-native";
+import { StyleSheet, Image, Alert, View } from "react-native";
 import * as Yup from "yup";
 import * as firebase from 'firebase';
 import Screen from "../components/Screen";
 import { Form, FormField, SubmitButton } from "../components/forms";
 import AuthContext from "../auth/context";
+import Icon from "../components/Icon";
+import colors from "../config/colors";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
@@ -26,8 +28,9 @@ function LoginScreen(props) {
   }
   return (
     <Screen style={styles.container}>
-      <Image style={styles.logo} source={require("../assets/logo-red.png")} />
-
+        <View style={styles.logo}>
+         <Icon  iconColor={colors.primary} size={200} backgroundColor="transparent" name="book-multiple-outline"/>
+         </View>
       <Form
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}
@@ -62,11 +65,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   logo: {
-    width: 80,
-    height: 80,
+
     alignSelf: "center",
-    marginTop: 50,
-    marginBottom: 20,
+    
   },
 });
 
