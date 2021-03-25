@@ -126,7 +126,7 @@ function CurrentDetailsScreen({navigation}) {
     })
   }
     return (
-      <Screen > 
+      <Screen style={styles.container}> 
         <FlatList
         data={future}
         renderItem={({item}) => (
@@ -144,5 +144,9 @@ function CurrentDetailsScreen({navigation}) {
       </Screen>
   );
 }
-
+const styles = StyleSheet.create({
+  container:{
+    padding:10
+  }
+})
 export default CurrentDetailsScreen;
