@@ -24,12 +24,12 @@ const menuItems = [
     targetScreen:routes.LIBRARY_SCREEN
   },
   {
-    title: "My Messages",
+    title: "Leaderboards",
     icon: {
-      name: "email",
+      name: "view-list",
       backgroundColor: colors.secondary,
     },
-    targetScreen:routes.MESSAGES,
+    targetScreen:routes.LEADERBOARDS,
   },
 ];
 
@@ -102,10 +102,10 @@ function AccountScreen({navigation}) {
   const deleteProfile= ()=>{
     var profdel=firebase.storage().ref(firebase.auth().currentUser.uid).delete()
     .then(()=>{
-      Alert.alert('File succesfully deleted')
+      Alert.alert("Success",'File succesfully deleted')
       setClose(close+1)
     }).catch((error)=>{
-      Alert.alert(error)
+      Alert.alert("Error",error)
     })
     
   }
@@ -136,7 +136,7 @@ function AccountScreen({navigation}) {
         }
       })
       .catch((error)=>{
-        Alert.alert(error)
+        Alert.alert("Error",error)
 
       })
     }

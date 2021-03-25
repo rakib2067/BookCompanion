@@ -116,14 +116,14 @@ function ListingsScreen({navigation}) {
     axios.get(apiURL+state.s+"&key="+apiKey+"&maxResults=10")
     .then(({data})=>{
       if(name.level==1&&name.exp==20){
-        Alert.alert('Congratulations You just gained 10 points')
+        Alert.alert('Congratulations', 'You just gained 10 points')
         firebase.firestore().collection("points")
         .doc(firebase.auth().currentUser.uid).set({
           exp:name.exp+10
         },{merge:true}).then(setRefresh(!refresh))
       }
       else if(name.level!==1){
-        Alert.alert('Congratulations You just gained 5 points')
+        Alert.alert('Congratulations', 'You just gained 10 points')
         firebase.firestore().collection("points")
         .doc(firebase.auth().currentUser.uid).set({
           exp:name.exp+5,
@@ -137,7 +137,21 @@ function ListingsScreen({navigation}) {
         return {...prevState, results:results}
       })
     }).catch((error)=>{
-      Alert.alert("There was an error with your search")
+      Alert.alert("Error","There was an error with your search. Please try again")
+      if(level==1){
+        firebase.firestore().collection("points")
+        .doc(firebase.auth().currentUser.uid).set({
+          exp:name.exp-10,
+          total:name.total-10
+        },{merge:true}).then(setRefresh(!refresh))    
+      }
+      else{
+        firebase.firestore().collection("points")
+        .doc(firebase.auth().currentUser.uid).set({
+          exp:name.exp-5,
+          total:name.total-5
+        },{merge:true}).then(setRefresh(!refresh))
+      }
     })
   }
 
@@ -177,7 +191,7 @@ function ListingsScreen({navigation}) {
             subTitle={item.volumeInfo.authors}
             image={item.volumeInfo.imageLinks.thumbnail}
             onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
-            backgroundColor={colors.light}
+            backgroundColor={colors.white}
           />
         )}
       />

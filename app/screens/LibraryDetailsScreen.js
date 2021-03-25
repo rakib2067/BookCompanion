@@ -12,6 +12,7 @@ import { AirbnbRating } from 'react-native-ratings';
 import AppTextInput from '../components/AppTextInput';
 import ListItemSeparator from '../components/ListItemSeparator';
 import ListDeleteAction from '../components/ListDeleteAction';
+import { color } from 'react-native-reanimated';
 
 function LibraryDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);//state for category
@@ -51,6 +52,8 @@ function LibraryDetailsScreen({route,navigation}) {
             value: 3,
           },
     ]
+
+    //Gets all initial points
     useEffect(()=>{
       firebase.firestore().collection("points")
       .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
@@ -63,6 +66,7 @@ function LibraryDetailsScreen({route,navigation}) {
         })
       })
   },[])
+  //a useEffect to be called whenever the refresh state is triggered to get points
     useEffect(()=>{
       firebase.firestore().collection("points")
       .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
@@ -76,6 +80,7 @@ function LibraryDetailsScreen({route,navigation}) {
         setLevelup(!levelUp)
       })
   },[refresh])
+  //Use effect to check whether a user has levelled up
   useEffect(()=>{
     if(progress.level>1)
     {if(progress.exp>=progress.target){
@@ -91,12 +96,13 @@ function LibraryDetailsScreen({route,navigation}) {
                 //Now we test if this works levelling them up in real time
     }}
   },[levelUp])
+  //checks for users exp and gives them a rating
   useEffect(()=>{
     if(progress.level==1&&progress.exp==40){
       Alert.alert("Give a rating")
     }
 },[name])
-
+//gets the initial rating
     useEffect(()=>{
         let Rate;
         const ratingRef=firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
@@ -107,6 +113,7 @@ function LibraryDetailsScreen({route,navigation}) {
             }
         })
     },[])
+    //gets users info to use for submitting reviews
     useEffect(()=>{
         firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid).get()
         .then((doc)=>{
@@ -114,6 +121,7 @@ function LibraryDetailsScreen({route,navigation}) {
         })
     
       },[])
+      //Used to post ratings 
     useEffect(()=>{
         if(rating){
             const x=rating;
@@ -127,7 +135,7 @@ function LibraryDetailsScreen({route,navigation}) {
                   exp:progress.exp+10
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
-                  "Congratulations you have received 10 exp, now write a review"
+                  "Congratulations","You have received 10 exp, now write a review"
                 );
               }
               else if(progress.level!==1){
@@ -137,11 +145,12 @@ function LibraryDetailsScreen({route,navigation}) {
                   total:progress.total+20
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
-                  "Congratulations you have received 20 exp"
+                  "Congratulations","You have received 20 exp, now write a review"
                 );
               }
       } 
     },[rating])
+    //used to change book from one library state to another 
     useEffect(() =>{
         const currentRef=firebase.firestore().collection("users")
         .doc(firebase.auth().currentUser.uid).collection("currently reading")
@@ -154,22 +163,20 @@ function LibraryDetailsScreen({route,navigation}) {
         .doc(title);
         currentRef.get().then((doc)=>{
             if (doc.exists){
-                console.log("doc exists")
                 setStorage({label:"currently reading", value:1})
             }
         })
         futureRef.get().then((doc)=>{
             if (doc.exists){
-                console.log("doc exists")
-                setStorage({label:"want to read", value:2})
+                setStorage({label:"want to read", value:2}) 
             }
         })
         pastRef.get().then((doc)=>{
             if (doc.exists){
-                console.log("doc exists")
                 setStorage({label:"read", value:3})
             }
         })
+
         if(category)
         {
         firebase.firestore().collection("users")
@@ -179,7 +186,7 @@ function LibraryDetailsScreen({route,navigation}) {
               author,
               image
         })
-        Alert.alert("This Book has changed libraries")
+        Alert.alert("Success","This Book has changed libraries")
         if(storage){
             firebase.firestore().collection("users")
             .doc(firebase.auth().currentUser.uid).collection(storage.label)
@@ -187,11 +194,18 @@ function LibraryDetailsScreen({route,navigation}) {
                 console.log("Document deleted")
                 
             }).catch((e)=>{
-                console.error("Error removing document"+e)
+                Alert.alert("Error removing document",e)
             })
         }
+        Alert.alert('Congratulations','You just gained 10 points. Now go to your library')
+            firebase.firestore().collection("points")
+            .doc(firebase.auth().currentUser.uid).set({
+              exp:progress.exp+10,
+              total:progress.total+10
+            },{merge:true}).then(setRefresh(!refresh))        
         }
       },[category])
+//used to get the average rating
 useEffect(()=>{
   const ratingRef=firebase.firestore().collection("books").doc(title).collection("ratings").onSnapshot(snapshot=>{
     const change=snapshot.docChanges()
@@ -214,12 +228,11 @@ useEffect(()=>{
       }
     })
   })
-  
 })
 //Reviews
-//gets reviews
+//gets reviews in real time 
 useEffect(()=>{
-    //can call a separate function to get all books
+    //can call a live subscriber function to get all books
     const subscriber=firebase.firestore().collection("books")
     .doc(title).collection("reviews").onSnapshot(snapshot=>{
       const change=snapshot.docChanges()
@@ -238,7 +251,7 @@ useEffect(()=>{
       )
     })
   },[])
-  //Delete useEffect
+  //Delete useEffect live subscriber to delete books from the flatlist 
   useEffect(()=>{
     const subscriber=firebase.firestore().collection("books")
     .doc(title).collection("reviews").onSnapshot(snapshot=>{
@@ -272,12 +285,12 @@ useEffect(()=>{
     })
   },[deleted])
     //Event handlers
+    //Handle submit to check first for gibberish, then for the length of the review text
     const handleSubmit=()=>{
-        //first check if users
+        //first check if users entered gibberish
         const words = require("gibberish-detective")({useCache: false});
         words.set("useCache", true)
         var tester=words.detect(review)
-        console.log(tester,"IS IT")
         if(tester==false){
         const userName=name.name
         var uid=firebase.auth().currentUser.uid
@@ -293,7 +306,7 @@ useEffect(()=>{
             exp:progress.exp+10
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
-            "Congratulations you have received 10 exp, now delete your review"
+            "Congratulations", "you have received 10 exp, now delete your review"
           );
         }
         else if(progress.level!==1){
@@ -304,7 +317,7 @@ useEffect(()=>{
             total:progress.total+50
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
-            "Congratulations you have received 50 exp"
+            "Congratulations" ,"you have received 50 exp"
           );
           }
           else if(review.length>50){
@@ -314,7 +327,7 @@ useEffect(()=>{
             total:progress.total+30
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
-            "Congratulations you have received 30 exp"
+            "Congratulations", "you have received 30 exp"
           );
           }
           else if(review.length>25){
@@ -324,7 +337,7 @@ useEffect(()=>{
             total:progress.total+20
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
-            "Congratulations you have received 20 exp"
+            "Congratulations","you have received 20 exp"
           );
           }else{
             firebase.firestore().collection("points")
@@ -333,7 +346,7 @@ useEffect(()=>{
               total:progress.total+15
             },{merge:true}).then(setRefresh(!refresh) )
             Alert.alert(
-              "Congratulations you have received 15 exp"
+              "Congratulations", "you have received 15 exp"
             );
 
           }
@@ -357,7 +370,7 @@ useEffect(()=>{
             exp:progress.exp+10
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
-            "Congratulations you have received 10 exp, now delete your review"
+            "Congratulations","you have received 10 exp, now delete your review"
           );
         }
         else if(progress.level!==1){
@@ -368,7 +381,7 @@ useEffect(()=>{
             total:progress.total+50
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
-            "Congratulations you have received 50 exp"
+            "Congratulations", "you have received 50 exp"
           );
           }
           else if(review.length>50){
@@ -378,7 +391,7 @@ useEffect(()=>{
             total:progress.total+30
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
-            "Congratulations you have received 30 exp"
+            "Congratulations", "you have received 30 exp"
           );
           }
           else if(review.length>25){
@@ -388,7 +401,7 @@ useEffect(()=>{
             total:progress.total+20
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
-            "Congratulations you have received 20 exp"
+            "Congratulations", "you have received 20 exp"
           );
           }else{
             firebase.firestore().collection("points")
@@ -397,7 +410,7 @@ useEffect(()=>{
               total:progress.total+15
             },{merge:true}).then(setRefresh(!refresh) )
             Alert.alert(
-              "Congratulations you have received 15 exp"
+              "Congratulations", "you have received 15 exp"
             );
 
           }
@@ -405,10 +418,12 @@ useEffect(()=>{
         setDeleted(!deleted)
     })
     } }
+    //in the case that the person enters gibberish 
     else{
-      Alert.alert('This Review is not valid')
+      Alert.alert('Error','This Review is not valid')
     }
     }
+    //event handler to delete the review frm the flatlist 
     const handleDelete= item =>{
         if(item.uid==firebase.auth().currentUser.uid){
         firebase.firestore().collection("books").doc(title).collection("reviews").doc(item.uid).delete()
@@ -428,16 +443,16 @@ useEffect(()=>{
               );
             }
         }).catch((e)=>{
-            Alert.alert('Error: '+e)
+            Alert.alert('Error: ',e)
         })}
         else{
-            Alert.alert('You do not have permission to remove this document')
+            Alert.alert('Error','You do not have permission to remove this document')
         }
     };
 
 
     return (
-        <ScrollView>
+        <ScrollView style={{backgroundColor:colors.light}}>
             <Image 
             style={styles.image}
             source={{uri: item.image}} />
@@ -460,12 +475,14 @@ useEffect(()=>{
                onFinishRating={rated => setRating(rated)}
             />
             </View>
-            <ListItem title="Reviews" />
+            
             <AppTextInput
+            backgroundColor={colors.white}
             placeholder="Write a review"
             onSubmitEditing={handleSubmit}
             onChangeText={text => setReview(text)}
             />
+            <ListItem title="Reviews" chevron={false}/>
             <FlatList 
             data={reviews}
             renderItem={({item}) => 

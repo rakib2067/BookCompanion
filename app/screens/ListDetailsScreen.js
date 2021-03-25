@@ -59,11 +59,10 @@ function ListDetailsScreen({route,navigation}) {
         }
       })
     })
-    
   })
   useEffect(()=>{
       if(name.level==1&&name.exp==30){
-        Alert.alert("Add the book to your library")
+        Alert.alert("Nice","Add the book to your library")
       }
   },[name])
   //triggers on refresh
@@ -142,6 +141,16 @@ function ListDetailsScreen({route,navigation}) {
                setReviews(updateAdd)
             })
           }
+          if(change.type==="removed"){//checks if any reviews were added into the db, loads all reviews
+            let updateAdd =[]
+            firebase.firestore().collection("books")
+            .doc(title).collection("reviews").get().then((snapshot)=>{
+              snapshot.forEach((doc)=>{
+                updateAdd.push(doc.data())
+              })
+               setReviews(updateAdd)
+            })
+          }
         }
         )
       })
@@ -174,16 +183,7 @@ function ListDetailsScreen({route,navigation}) {
                   ]
                 );
                 }
-                else{
-                  firebase.firestore().collection("points")
-                .doc(firebase.auth().currentUser.uid).set({
-                  exp:name.exp+10,
-                  total:name.total+10
-                },{merge:true}).then(setRefresh(!refresh) )
-                Alert.alert(
-                  "Congratulations, you just earned 10 exp!");
-
-                }
+             
             }
         })
         futureRef.get().then((doc)=>{
@@ -202,16 +202,7 @@ function ListDetailsScreen({route,navigation}) {
                   ]
                 );
                 }
-                else{
-                  firebase.firestore().collection("points")
-                .doc(firebase.auth().currentUser.uid).set({
-                  exp:name.exp+10,
-                  total:name.total+10
-                },{merge:true}).then(setRefresh(!refresh) )
-                Alert.alert(
-                  "Congratulations, you just earned 10 exp!");
-
-                }
+           
             }
         })
         pastRef.get().then((doc)=>{
@@ -229,17 +220,7 @@ function ListDetailsScreen({route,navigation}) {
                     { text: "go to library", onPress: () => navigation.navigate(routes.LIBRARY_SCREEN)}
                   ]
                 );
-                }
-                else{
-                  firebase.firestore().collection("points")
-                .doc(firebase.auth().currentUser.uid).set({
-                  exp:name.exp+10,
-                  total:name.total+10
-                },{merge:true}).then(setRefresh(!refresh) )
-                Alert.alert(
-                  "Congratulations, you just earned 10 exp!");
-
-                }
+                }        
             }
         })
     
@@ -264,13 +245,23 @@ function ListDetailsScreen({route,navigation}) {
             }).catch((e)=>{
                 console.error("Error removing document"+e)
             })
+            
         }
         if(name.level==1){
-            Alert.alert('Congratulations You just gained 10 points. Now go to your library')
+            Alert.alert('Congratulations', 'You just gained 10 points. Now go to your library')
             firebase.firestore().collection("points")
             .doc(firebase.auth().currentUser.uid).set({
               exp:name.exp+10
             },{merge:true}).then(setRefresh(!refresh))
+          }
+          else if(name.level!==1){
+            Alert.alert('Congratulations You just gained 10 points. Now go to your library')
+            firebase.firestore().collection("points")
+            .doc(firebase.auth().currentUser.uid).set({
+              exp:name.exp+10,
+              total:name.total+10
+            },{merge:true}).then(setRefresh(!refresh))
+
           }
         }
       },[category])

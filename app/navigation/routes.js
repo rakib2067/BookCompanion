@@ -7,6 +7,7 @@ export default Object.freeze({
     LISTING_EDIT: "ListingEdit",
     LIBRARY_DETAILS:"LibraryDetails",
     LIBRARY_SCREEN:"Library",
+    LEADERBOARDS:"Leaderboards",
     LOGIN: "Login",
     MESSAGES: "Messages",
     PAST_DETAILS:"PastDetails",

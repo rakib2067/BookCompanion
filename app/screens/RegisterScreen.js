@@ -1,5 +1,5 @@
 import React, {useContext}from "react";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import * as Yup from "yup";
 import firebase from 'firebase';
 
@@ -39,7 +39,7 @@ function RegisterScreen() {
 
   })
   .catch((error)=>{
-    console.log(error)
+    Alert.alert("error",error.message)
   })
 }
   return (

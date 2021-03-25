@@ -1,9 +1,10 @@
 import React,{useState,useEffect}from 'react';
-import { Text } from 'react-native';
+import { Text,StyleSheet} from 'react-native';
 import LeaderBoard from 'react-native-leaderboard';
 import * as firebase from 'firebase'
 import Screen from '../components/Screen';
 import ListItem from '../components/ListItem';
+import colors from '../config/colors';
 function LeaderBoardScreen(props) {
     const[data,setData]=useState([])
     const[state,setState]=useState('total')
@@ -48,7 +49,8 @@ function LeaderBoardScreen(props) {
 
       }
     return (
-        <Screen>
+        
+        <Screen style={styles.container}>
         <ListItem title="Leaderboards" onPress={handlePress}/>
         <LeaderBoard
         data={data}
@@ -59,5 +61,9 @@ function LeaderBoardScreen(props) {
         
     );
 }
-
+const styles = StyleSheet.create({
+  container:{
+    backgroundColor:colors.light
+  }
+})
 export default LeaderBoardScreen;

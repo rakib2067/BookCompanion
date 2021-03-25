@@ -1,5 +1,5 @@
 import React,{useContext} from "react";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, Alert } from "react-native";
 import * as Yup from "yup";
 import * as firebase from 'firebase';
 import Screen from "../components/Screen";
@@ -21,6 +21,7 @@ function LoginScreen(props) {
     })
     .catch((error)=>{
       console.log(error)
+      Alert.alert("error",error.message)
     })
   }
   return (
