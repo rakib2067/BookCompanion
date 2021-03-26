@@ -105,7 +105,7 @@ function AccountScreen({navigation}) {
       Alert.alert("Success",'File succesfully deleted')
       setClose(close+1)
     }).catch((error)=>{
-      Alert.alert("Error",error)
+      Alert.alert("Error","Can't delete an empty profile pic 😦")
     })
     
   }
@@ -133,6 +133,9 @@ function AccountScreen({navigation}) {
             { text: "Search for a book", onPress: () => navigation.navigate(routes.LISTINGS) }
           ]
         );
+        }
+        else{
+          Alert.alert("Success","Profile Picture uploaded")
         }
       })
       .catch((error)=>{
@@ -169,6 +172,7 @@ function AccountScreen({navigation}) {
           title={state?state.name:<ActivityIndicator animating/>}
           subTitle={state?state.email:<ActivityIndicator animating/>}
           image={{uri:image}}
+          activity
           onPress={pickImage}
         />
       </View>

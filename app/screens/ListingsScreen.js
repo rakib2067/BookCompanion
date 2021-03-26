@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text , ToastAndroid, Vibration, Image,View} from "react-native";
+import { Alert, FlatList, StyleSheet, Text , ToastAndroid, Vibration, Image,View, ActivityIndicator} from "react-native";
 import axios from 'axios';
 
 import Card from "../components/Card";

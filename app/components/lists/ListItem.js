@@ -1,11 +1,11 @@
 import React from "react";
-import { View, StyleSheet, Image, TouchableHighlight } from "react-native";
+import { View, StyleSheet, TouchableHighlight, ActivityIndicator } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-
+import Image from 'react-native-image-progress';
 import Text from "../Text";
 import colors from "../../config/colors";
-
+import * as Progress from 'react-native-progress'
 function ListItem({
   title,
   subTitle,
@@ -21,7 +21,15 @@ function ListItem({
       <TouchableHighlight style={borderRadius} underlayColor={colors.light} onPress={onPress}>
         <View style={[styles.container,{backgroundColor},{borderRadius}]}>
           {IconComponent}
-          {image && <Image style={styles.image} source={image} />}
+          {image && <Image indicator={Progress.Pie} 
+          indicatorProps={{
+          size: 80,
+           borderWidth: 0,
+           color: 'rgba(150, 150, 150, 1)',
+           unfilledColor: 'rgba(200, 200, 200, 0.2)'
+          }}
+          style={styles.image} 
+          source={image} />}
           <View style={styles.detailsContainer}>
             <Text style={styles.title} numberOfLines={1}>
               {title}
