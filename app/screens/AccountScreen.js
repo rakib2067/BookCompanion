@@ -97,7 +97,13 @@ function AccountScreen({navigation}) {
           Alert.alert('Error','Sorry, we need camera roll permissions to make this work!');
         }
         else{
-          Alert.alert('Success','Upload a profile picture');
+          firebase.firestore().collection("points")
+          .doc(firebase.auth().currentUser.uid).get().then((doc)=>{
+          const Ref=doc.data();
+          if(Ref.level==1){
+            Alert.alert("Notice","Upload a profile picture")
+          }
+        })
         }
       }
     })();
