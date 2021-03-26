@@ -15,7 +15,7 @@ function AppTextInput({backgroundColor=defaultStyles.colors.light,icon, width="1
         onChangeText={onChangeText}
         onSubmitEditing={onSubmitEditing}
         placeholderTextColor={defaultStyles.colors.medium}
-        style={defaultStyles.text} {...otherProps} />
+        style={[defaultStyles.text,{width:300}]} {...otherProps} />
         </View> 
     );
 }
