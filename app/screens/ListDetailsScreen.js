@@ -10,6 +10,7 @@ import AppPicker from '../components/Picker';
 import ListDeleteAction from '../components/ListDeleteAction';
 import { ListItemSeparator } from '../components/lists';
 import routes from '../navigation/routes';
+import { Rating } from 'react-native-ratings';
 function ListDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
@@ -42,6 +43,22 @@ function ListDetailsScreen({route,navigation}) {
       const change=snapshot.docChanges()
       change.forEach((change)=>{
         if(change.type==="added"){
+          let updateAdd=[]
+          firebase.firestore().collection("books").doc(title).collection("ratings").get().then((snapshot)=>{
+            snapshot.forEach((doc)=>{
+              updateAdd.push(doc.data())
+            })
+            let avg=0
+            let count=0
+            updateAdd.forEach(rate=>{
+              avg=avg+rate.rating
+              count=count+1
+            })
+            console.log(count)
+            setAverage((avg/count).toFixed(2))
+          })
+        }
+        if(change.type=="modified"){
           let updateAdd=[]
           firebase.firestore().collection("books").doc(title).collection("ratings").get().then((snapshot)=>{
             snapshot.forEach((doc)=>{
@@ -273,7 +290,9 @@ function ListDetailsScreen({route,navigation}) {
             <View style={styles.detailsContainer}>
             <AppText style= {styles.title}>{item.volumeInfo.title}</AppText>
             <AppText style={styles.author}>{item.volumeInfo.authors}</AppText>
+            <View style={{justifyContent:"flex-start", alignItems:"flex-start"}}>
             <AppText style={styles.rating}>Average Rating: {average}/5</AppText>
+            <Rating  readonly={true} imageSize={30} startingValue={average} tintColor={colors.light}/></View>
             <View style={styles.listItem}>
             <View styles={styles.iconContainer}>
       

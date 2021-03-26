@@ -465,7 +465,7 @@ useEffect(()=>{
             <AppText style= {styles.title}>{item.title}</AppText>
             <AppText style={styles.author}>{item.author}</AppText>
             <View style={{justifyContent:"flex-start", alignItems:"flex-start", }}>
-            <AppText style={styles.rating}> {average}/5</AppText>
+            <AppText style={styles.rating}> Average Rating: {average}/5</AppText>
             <Rating readonly={true} imageSize={30} startingValue={average} tintColor={colors.light}/> 
             </View>
             <View style={styles.listItem}>
