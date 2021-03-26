@@ -94,7 +94,10 @@ function AccountScreen({navigation}) {
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
+          Alert.alert('Error','Sorry, we need camera roll permissions to make this work!');
+        }
+        else{
+          Alert.alert('Success','Upload a profile picture');
         }
       }
     })();
