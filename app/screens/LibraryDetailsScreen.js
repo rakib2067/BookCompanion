@@ -8,7 +8,7 @@ import Icon from '../components/Icon';
 import AppPicker from '../components/Picker';
 import * as firebase from 'firebase';
 import routes from '../navigation/routes';
-import { AirbnbRating } from 'react-native-ratings';
+import { AirbnbRating, Rating } from 'react-native-ratings';
 import AppTextInput from '../components/AppTextInput';
 import ListItemSeparator from '../components/ListItemSeparator';
 import ListDeleteAction from '../components/ListDeleteAction';
@@ -124,6 +124,7 @@ function LibraryDetailsScreen({route,navigation}) {
       //Used to post ratings 
     useEffect(()=>{
         if(rating){
+            setDef({rating:rating})
             const x=rating;
             firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
             .set({
@@ -293,12 +294,14 @@ useEffect(()=>{
         var tester=words.detect(review)
         if(tester==false){
         const userName=name.name
+        var userRating=def.rating
         var uid=firebase.auth().currentUser.uid
         if(!name.url){
             firebase.firestore().collection("books").doc(title).collection("reviews").doc(user).set({
             uid,
             userName,
             review,
+            userRating
         })
         if(progress.level==1&&progress.exp==50){
           firebase.firestore().collection("points")
@@ -356,13 +359,15 @@ useEffect(()=>{
         }
         
         else{
+        var userRating=def.rating
         var storage=firebase.storage().ref(firebase.auth().currentUser.uid).getDownloadURL()
         .then((url)=>{
             firebase.firestore().collection("books").doc(title).collection("reviews").doc(user).set({
             uid,
             userName,
             review,
-            url
+            url,
+            userRating
         })
         if(progress.level==1&&progress.exp==50){
           firebase.firestore().collection("points")
@@ -459,7 +464,10 @@ useEffect(()=>{
             <View style={styles.detailsContainer}>
             <AppText style= {styles.title}>{item.title}</AppText>
             <AppText style={styles.author}>{item.author}</AppText>
-            <AppText style={styles.rating}>Average Rating: {average}/5</AppText>
+            <View style={{justifyContent:"flex-start", alignItems:"flex-start", }}>
+            <AppText style={styles.rating}> {average}/5</AppText>
+            <Rating readonly={true} imageSize={30} startingValue={average} tintColor={colors.light}/> 
+            </View>
             <View style={styles.listItem}>
             <View styles={styles.iconContainer}>
             <AppPicker 
@@ -489,6 +497,7 @@ useEffect(()=>{
             <ListItem 
                 title={item.userName}
                 subTitle={item.review}
+                rating={item.userRating}
                 image={{uri:item.url?item.url:"https://vignette.wikia.nocookie.net/pandorahearts/images/a/ad/Not_available.jpg"}}
                 numberOfLines={number? number: 2}
                 onPress={()=>setNumber(10)}

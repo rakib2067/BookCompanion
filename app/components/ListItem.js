@@ -4,7 +4,8 @@ import colors from '../config/colors';
 import AppText from './AppText';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
-function ListItem({image, title,IconComponent, subTitle,onPress,numberOfLines=3,renderRightActions,chevron=true}) {
+import { AirbnbRating } from 'react-native-ratings';
+function ListItem({image, rating,title,IconComponent, subTitle,onPress,numberOfLines=3,renderRightActions,chevron=true}) {
     return (
         <Swipeable
         renderRightActions={renderRightActions}
@@ -19,6 +20,9 @@ function ListItem({image, title,IconComponent, subTitle,onPress,numberOfLines=3,
         source={image}/>}
         <View style={styles.textContainer}>
         <AppText style= {styles.title} numberOfLines={1}>{title}</AppText>
+        <View style={{justifyContent:"flex-start",alignItems:"flex-start"}}>
+        {rating && <AirbnbRating style={{marginRight:20}} defaultRating={rating} showRating={false} size={15}/> }
+        </View>
         {subTitle &&<AppText style= {styles.subTitle}  numberOfLines={numberOfLines}>{subTitle}</AppText>}
         </View>
         {chevron &&<MaterialCommunityIcons color={colors.medium}   name="chevron-right" size={25} />}
