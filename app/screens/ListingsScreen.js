@@ -123,7 +123,7 @@ function ListingsScreen({navigation}) {
         },{merge:true}).then(setRefresh(!refresh))
       }
       else if(name.level!==1){
-        Alert.alert('Congratulations', 'You just gained 10 points')
+        Alert.alert('Congratulations', 'You just gained 5 points')
         firebase.firestore().collection("points")
         .doc(firebase.auth().currentUser.uid).set({
           exp:name.exp+5,
