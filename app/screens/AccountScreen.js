@@ -127,7 +127,8 @@ function AccountScreen({navigation}) {
         if(name.level==1 && name.exp==10){
           firebase.firestore().collection("points")
         .doc(firebase.auth().currentUser.uid).set({
-          exp:name.exp+10
+          exp:name.exp+10,
+          total:20
         },{merge:true}).then(setRefresh(!refresh) )
         Alert.alert(
           "Congratulations",

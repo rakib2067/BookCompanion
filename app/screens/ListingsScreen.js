@@ -75,7 +75,8 @@ function ListingsScreen({navigation}) {
     if(name.level==1&&name.exp==0){
       firebase.firestore().collection("points")
       .doc(firebase.auth().currentUser.uid).set({
-        exp:10
+        exp:10,
+        total:10
       },{merge:true}).then(setRefresh(!refresh))
       Alert.alert(
         "Congratulations",
@@ -119,7 +120,8 @@ function ListingsScreen({navigation}) {
         Alert.alert('Congratulations', 'You just gained 10 points')
         firebase.firestore().collection("points")
         .doc(firebase.auth().currentUser.uid).set({
-          exp:name.exp+10
+          exp:name.exp+10,
+          total: name.total+10
         },{merge:true}).then(setRefresh(!refresh))
       }
       else if(name.level!==1){

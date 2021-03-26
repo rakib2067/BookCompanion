@@ -133,7 +133,8 @@ function LibraryDetailsScreen({route,navigation}) {
               if(progress.level==1&&progress.exp==40){
                 firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
-                  exp:progress.exp+10
+                  exp:progress.exp+10,
+                  total:progress.total+10
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
                   "Congratulations","You have received 10 exp, now write a review"
@@ -306,7 +307,8 @@ useEffect(()=>{
         if(progress.level==1&&progress.exp==50){
           firebase.firestore().collection("points")
           .doc(firebase.auth().currentUser.uid).set({
-            exp:progress.exp+10
+            exp:progress.exp+10,
+            total:progress.total+10
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
             "Congratulations", "you have received 10 exp, now delete your review"

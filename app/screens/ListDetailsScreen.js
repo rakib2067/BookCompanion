@@ -268,7 +268,8 @@ function ListDetailsScreen({route,navigation}) {
             Alert.alert('Congratulations', 'You just gained 10 points. Now go to your library')
             firebase.firestore().collection("points")
             .doc(firebase.auth().currentUser.uid).set({
-              exp:name.exp+10
+              exp:name.exp+10,
+              total:name.total+10
             },{merge:true}).then(setRefresh(!refresh))
           }
           else if(name.level!==1){
