@@ -54,7 +54,7 @@ function ListDetailsScreen({route,navigation}) {
               count=count+1
             })
             console.log(count)
-            setAverage(avg/count)
+            setAverage((avg/count).toFixed(2))
           })
         }
       })
