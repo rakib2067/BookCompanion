@@ -12,7 +12,7 @@ import { AirbnbRating, Rating } from 'react-native-ratings';
 import AppTextInput from '../components/AppTextInput';
 import ListItemSeparator from '../components/ListItemSeparator';
 import ListDeleteAction from '../components/ListDeleteAction';
-import { color } from 'react-native-reanimated';
+import { color, set } from 'react-native-reanimated';
 
 function LibraryDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);//state for category
@@ -25,6 +25,7 @@ function LibraryDetailsScreen({route,navigation}) {
     const [name, setName]=useState();//state for current user
     const[review,setReview]=useState();//onChangetext
     const[reviews,setReviews]=useState([]);//reviews
+    const [isRated,setIsRated]=useState(false);
     const[refresh,setRefresh]=useState(true);
     const[levelUp,setLevelup]=useState(true);
     const [progress,setProgress]=useState({
@@ -41,11 +42,11 @@ function LibraryDetailsScreen({route,navigation}) {
     const categories=[
         {
             label: "currently reading",
-            value: 1,
+            value: 2,
           },
           {
             label: "want to read",
-            value: 2,
+            value: 1,
           },
           {
             label: "read",
@@ -109,7 +110,8 @@ function LibraryDetailsScreen({route,navigation}) {
         ratingRef.get().then((doc)=>{
             if(doc.exists){
                 Rate=doc.data()
-                setDef(Rate)  
+                setDef(Rate) 
+                setIsRated(true)
             }
         })
     },[])
@@ -123,18 +125,31 @@ function LibraryDetailsScreen({route,navigation}) {
       },[])
       //Used to post ratings 
     useEffect(()=>{
+      //Upon clicking on the rating, setRating is called, wherein we check first if rating state exists, execute
         if(rating){
+          //if there is already a default def will be filled otherwise we set def to the default rating, which will show 
+          if(isRated==true){ //we want to check if there is already a default rating, otherwise we would like to pass on to the else statement
             setDef({rating:rating})
             const x=rating;
             firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
             .set({
                 rating
             })
+          }
+          else{
+            //now we set the value of the def.rating, so that it can be used to pass the rating to the firestore database 
+            setDef({rating:rating})
+            setIsRated(true)
+            firebase.firestore().collection("books").doc(title).collection("ratings").doc(firebase.auth().currentUser.uid)
+            .set({
+                rating
+            })
+            //after this rating has been set we check for levels, so if a new user has rated, they get 10 exp, otherwise a regular user  gets 20 
               if(progress.level==1&&progress.exp==40){
                 firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
                   exp:progress.exp+10,
-                  total:progress.total+10
+                  total:50
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
                   "Congratulations","You have received 10 exp, now write a review"
@@ -150,6 +165,7 @@ function LibraryDetailsScreen({route,navigation}) {
                   "Congratulations","You have received 20 exp, now write a review"
                 );
               }
+          }
       } 
     },[rating])
     //used to change book from one library state to another 
@@ -163,14 +179,15 @@ function LibraryDetailsScreen({route,navigation}) {
         const pastRef=firebase.firestore().collection("users")
         .doc(firebase.auth().currentUser.uid).collection("read")
         .doc(title);
+        //If book already exists in one of the other libraries
         currentRef.get().then((doc)=>{
             if (doc.exists){
-                setStorage({label:"currently reading", value:1})
+                setStorage({label:"currently reading", value:2})
             }
         })
         futureRef.get().then((doc)=>{
             if (doc.exists){
-                setStorage({label:"want to read", value:2}) 
+                setStorage({label:"want to read", value:1}) 
             }
         })
         pastRef.get().then((doc)=>{
@@ -179,17 +196,9 @@ function LibraryDetailsScreen({route,navigation}) {
             }
         })
 
-        if(category)
+        if(category)//when changing category
         {
-        firebase.firestore().collection("users")
-        .doc(firebase.auth().currentUser.uid).collection(category.label)
-        .doc(title).set({
-              title,
-              author,
-              image
-        })
-        Alert.alert("Success","This Book has changed libraries")
-        if(storage){
+          if(storage){
             firebase.firestore().collection("users")
             .doc(firebase.auth().currentUser.uid).collection(storage.label)
             .doc(title).delete().then(()=>{
@@ -198,13 +207,33 @@ function LibraryDetailsScreen({route,navigation}) {
             }).catch((e)=>{
                 Alert.alert("Error removing document",e)
             })
-        }
-        Alert.alert('Congratulations','You just gained 10 points. Now go to your library')
-            firebase.firestore().collection("points")
+            firebase.firestore().collection("users")
+            .doc(firebase.auth().currentUser.uid).collection(category.label)
+            .doc(title).set({
+                  title,
+                  author,
+                  image
+            })
+            if(category.label=="currently reading"){
+              firebase.firestore().collection("points")
             .doc(firebase.auth().currentUser.uid).set({
               exp:progress.exp+10,
               total:progress.total+10
-            },{merge:true}).then(setRefresh(!refresh))        
+            },{merge:true}).then(setRefresh(!refresh))
+            Alert.alert("Success","You have earned 10 exp")
+            }
+            else if(category.label=="want to read"){
+              Alert.alert("Success","Book has changed libraries")
+            }
+            else if(category.label=="read"){
+              firebase.firestore().collection("points")
+            .doc(firebase.auth().currentUser.uid).set({
+              exp:progress.exp+15,
+              total:progress.total+15
+            },{merge:true}).then(setRefresh(!refresh))
+            Alert.alert("Success","You have earned 15 exp")
+            }
+        }  
         }
       },[category])
 //used to get the average rating
@@ -213,6 +242,22 @@ useEffect(()=>{
     const change=snapshot.docChanges()
     change.forEach((change)=>{
       if(change.type==="added"){
+        let updateAdd=[]
+        firebase.firestore().collection("books").doc(title).collection("ratings").get().then((snapshot)=>{
+          snapshot.forEach((doc)=>{
+            updateAdd.push(doc.data())
+          })
+          let avg=0
+          let count=0
+          updateAdd.forEach(rate=>{
+            avg=avg+rate.rating
+            count=count+1
+          })
+          console.log(count)
+          setAverage((avg/count).toFixed(2))
+        })
+      }
+      if(change.type==="modified"){
         let updateAdd=[]
         firebase.firestore().collection("books").doc(title).collection("ratings").get().then((snapshot)=>{
           snapshot.forEach((doc)=>{
@@ -308,7 +353,7 @@ useEffect(()=>{
           firebase.firestore().collection("points")
           .doc(firebase.auth().currentUser.uid).set({
             exp:progress.exp+10,
-            total:progress.total+10
+            total:60
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
             "Congratulations", "you have received 10 exp, now delete your review"
@@ -374,7 +419,8 @@ useEffect(()=>{
         if(progress.level==1&&progress.exp==50){
           firebase.firestore().collection("points")
           .doc(firebase.auth().currentUser.uid).set({
-            exp:progress.exp+10
+            exp:progress.exp+10,
+            total:60
           },{merge:true}).then(setRefresh(!refresh) )
           Alert.alert(
             "Congratulations","you have received 10 exp, now delete your review"
@@ -439,7 +485,8 @@ useEffect(()=>{
             if(progress.level==1&&progress.exp==60){
               firebase.firestore().collection("points")
               .doc(firebase.auth().currentUser.uid).set({
-                exp:progress.exp+10
+                exp:progress.exp+10,
+                total:70
               },{merge:true}).then(setRefresh(!refresh) )
               Alert.alert(
                 "Congratulations",

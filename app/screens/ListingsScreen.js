@@ -121,7 +121,7 @@ function ListingsScreen({navigation}) {
         firebase.firestore().collection("points")
         .doc(firebase.auth().currentUser.uid).set({
           exp:name.exp+10,
-          total: name.total+10
+          total: 30
         },{merge:true}).then(setRefresh(!refresh))
       }
       else if(name.level!==1){

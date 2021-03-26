@@ -50,7 +50,7 @@ function FutureDetailsScreen({navigation}) {
                   exp:0,
                   level:2,
                   target:100,
-                  total:100
+                  total:80
                 },{merge:true}).then(setRefresh(!refresh))
                 Vibration.vibrate()
                 ToastAndroid.show('You leveled up to Level 2!', ToastAndroid.LONG);

@@ -120,11 +120,11 @@ function ListDetailsScreen({route,navigation}) {
     const user=firebase.auth().currentUser.uid
     const categories=[
         {
-            label: "currently reading",
+            label: "want to read",
             value: 1,
           },
           {
-            label: "want to read",
+            label: "currently reading",
             value: 2,
           },
           {
@@ -173,6 +173,7 @@ function ListDetailsScreen({route,navigation}) {
       })
     },[])
 
+    //Triggers when user chooses category
     useEffect(() =>{
         const currentRef=firebase.firestore().collection("users")
         .doc(firebase.auth().currentUser.uid).collection("currently reading")
@@ -183,14 +184,15 @@ function ListDetailsScreen({route,navigation}) {
         const pastRef=firebase.firestore().collection("users")
         .doc(firebase.auth().currentUser.uid).collection("read")
         .doc(title);
-        
+        //I want to check if the document exists in the users libraries, if so upon clicking it will show up in the correct state 
         currentRef.get().then((doc)=>{
             if (doc.exists){
-                setStorage({label:"currently reading", value:1})
+                setStorage({label:"currently reading", value:2})
                 if(name.level==1 && name.exp==30){
                 firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
-                  exp:name.exp+10
+                  exp:name.exp+10,
+                  total:40
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
                   "Congratulations",
@@ -205,11 +207,12 @@ function ListDetailsScreen({route,navigation}) {
         })
         futureRef.get().then((doc)=>{
             if (doc.exists){
-                setStorage({label:"want to read", value:2})
+                setStorage({label:"want to read", value:1})
                 if(name.level==1 && name.exp==30){
                   firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
-                  exp:name.exp+10
+                  exp:name.exp+10,
+                  total:40
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
                   "Congratulations",
@@ -218,8 +221,7 @@ function ListDetailsScreen({route,navigation}) {
                     { text: "go to library", onPress: () => navigation.navigate(routes.LIBRARY_SCREEN)}
                   ]
                 );
-                }
-           
+                }  
             }
         })
         pastRef.get().then((doc)=>{
@@ -228,7 +230,8 @@ function ListDetailsScreen({route,navigation}) {
                 if(name.level==1 && name.exp==30){
                   firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
-                  exp:name.exp+10
+                  exp:name.exp+10,
+                  total:40
                 },{merge:true}).then(setRefresh(!refresh) )
                 Alert.alert(
                   "Congratulations",
@@ -241,8 +244,51 @@ function ListDetailsScreen({route,navigation}) {
             }
         })
     
-        if(category)
-        {
+        if(category){//if they changed category
+        //if it already exists in storage
+        if(storage){
+          firebase.firestore().collection("users")
+          .doc(firebase.auth().currentUser.uid).collection(storage.label)
+          .doc(title).delete().then(()=>{
+              console.log("Document deleted")
+              
+          }).catch((e)=>{
+              Alert.alert("Error removing document",e)
+          })
+          firebase.firestore().collection("users")
+          .doc(firebase.auth().currentUser.uid).collection(category.label)
+          .doc(title).set({
+                title,
+                author,
+                image
+          })
+          if(category.label=="currently reading"){
+            firebase.firestore().collection("points")
+          .doc(firebase.auth().currentUser.uid).set({
+            exp:name.exp+10,
+            total:name.total+10
+          },{merge:true}).then(setRefresh(!refresh))
+          Alert.alert("Success","You have earned 10 exp")
+          }
+          else if(category.label=="want to read"){
+            firebase.firestore().collection("points")
+            .doc(firebase.auth().currentUser.uid).set({
+              exp:name.exp+5,
+              total:name.total+5
+            },{merge:true}).then(setRefresh(!refresh))
+          Alert.alert("Success","You have earned 5 exp")
+          }
+          else if(category.label=="read"){
+            firebase.firestore().collection("points")
+          .doc(firebase.auth().currentUser.uid).set({
+            exp:name.exp+15,
+            total:name.total+15
+          },{merge:true}).then(setRefresh(!refresh))
+          Alert.alert("Success","You have earned 15 exp")
+          }
+      }  
+      //if it is a new book
+      else{
         firebase.firestore().collection("users")
         .doc(firebase.auth().currentUser.uid).collection(category.label)
         .doc(title).set({
@@ -253,35 +299,24 @@ function ListDetailsScreen({route,navigation}) {
         firebase.firestore().collection("books").doc(item.volumeInfo.title)
         .set({
         
-        })
-        if(storage){
-            firebase.firestore().collection("users")
-            .doc(firebase.auth().currentUser.uid).collection(storage.label)
-            .doc(title).delete().then(()=>{
-                console.log("Document deleted")
-            }).catch((e)=>{
-                console.error("Error removing document"+e)
-            })
-            
-        }
+        }) 
         if(name.level==1){
-            Alert.alert('Congratulations', 'You just gained 10 points. Now go to your library')
+            Alert.alert("Success", 'You just gained 10 points. Now go to your library')
             firebase.firestore().collection("points")
             .doc(firebase.auth().currentUser.uid).set({
               exp:name.exp+10,
-              total:name.total+10
+              total:40
             },{merge:true}).then(setRefresh(!refresh))
           }
           else if(name.level!==1){
-            Alert.alert('Congratulations You just gained 10 points. Now go to your library')
+            Alert.alert('Congratulations You just gained 10 points.')
             firebase.firestore().collection("points")
             .doc(firebase.auth().currentUser.uid).set({
               exp:name.exp+10,
               total:name.total+10
             },{merge:true}).then(setRefresh(!refresh))
-
           }
-        }
+        }}
       },[category])
     return (
         <ScrollView style={styles.container}>
@@ -313,12 +348,9 @@ function ListDetailsScreen({route,navigation}) {
                 image={{uri:item.url}}
                 numberOfLines={number? number: 2}
                 onPress={()=>setNumber(10)}
-            />}
-        
-            ItemSeparatorComponent={ListItemSeparator}
-            
+            />}        
+            ItemSeparatorComponent={ListItemSeparator}       
         />
-            
              </View>
              
              </View>

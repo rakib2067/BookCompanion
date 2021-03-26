@@ -56,21 +56,20 @@ function LibraryScreen({navigation}) {
   return (
         
         <Screen style={styles.container}>
-        <View style={styles.container1}>
-        
-        <ListItem
-          title="Currently Reading"
-          subTitle={current? current+ " books":"0 books"}
-          onPress={() => navigation.navigate(routes.CURRENT_DETAILS)}
-          IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
-        />
-      </View>
       <View style={styles.container1}>
         <ListItem
           title="Want To Read"
           subTitle={future? future+ " books":"0 books"}
           onPress={() => navigation.navigate(routes.FUTURE_DETAILS)}
           IconComponent={<Icon iconColor="#98fb98" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
+        />
+      </View>
+      <View style={styles.container1}>
+        <ListItem
+          title="Currently Reading"
+          subTitle={current? current+ " books":"0 books"}
+          onPress={() => navigation.navigate(routes.CURRENT_DETAILS)}
+          IconComponent={<Icon iconColor="#a86cc1" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
         />
       </View>
       <View style={styles.container1}>
