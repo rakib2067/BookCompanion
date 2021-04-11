@@ -34,14 +34,6 @@ if(firebase.apps.length===0){
 export default function App() {
 //define variables inside to create state hooks
   const [user,setUser]=useState();
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      console.log("User is signed in")
-      
-    } else {
-      console.log("User is signed out")
-    }
-  });
   return(
     <AuthContext.Provider value={{user,setUser}}>
     <NavigationContainer theme={navigationTheme}>

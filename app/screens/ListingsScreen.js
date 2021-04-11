@@ -133,7 +133,7 @@ function ListingsScreen({navigation}) {
         },{merge:true}).then(setRefresh(!refresh))//this should check the exp and level 
       }
       let pre=data.items;
-      results=cleanData(pre);
+      results=cleanData(pre);//Function to clean the data
      
       setState(prevState => {
         return {...prevState, results:results}
