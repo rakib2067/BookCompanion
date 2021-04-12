@@ -5,6 +5,8 @@ import Screen from '../components/Screen';
 import ListItem from '../components/ListItem';
 import colors from '../config/colors';
 import Leaderboard from '../components/LeaderBoard';
+import * as Analytics from 'expo-firebase-analytics';
+
 function LeaderBoardScreen(props) {
     const[data,setData]=useState([])
     const[state,setState]=useState('total')
@@ -38,6 +40,12 @@ function LeaderBoardScreen(props) {
           }
           )
         })
+      },[])
+      useEffect(()=>{
+        Analytics.logEvent('Leaderboard', {
+          screen: 'Leaderboard Screen',
+          purpose: 'User has viewed the leaderboard screen',
+        });
       },[])
       const handlePress= ()=>{
         if(state=="total"){

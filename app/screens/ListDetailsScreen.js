@@ -11,6 +11,8 @@ import ListDeleteAction from '../components/ListDeleteAction';
 import { ListItemSeparator } from '../components/lists';
 import routes from '../navigation/routes';
 import { Rating } from 'react-native-ratings';
+import * as Analytics from 'expo-firebase-analytics';
+
 function ListDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
@@ -296,6 +298,10 @@ function ListDetailsScreen({route,navigation}) {
               author,
               image
         })
+        Analytics.logEvent('addToLibrary', {
+          screen: 'Details Screen',
+          purpose: 'User has added to: '+category.label,
+        });
         firebase.firestore().collection("books").doc(item.volumeInfo.title)
         .set({
         

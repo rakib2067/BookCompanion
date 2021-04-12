@@ -12,7 +12,7 @@ import { AirbnbRating, Rating } from 'react-native-ratings';
 import AppTextInput from '../components/AppTextInput';
 import ListItemSeparator from '../components/ListItemSeparator';
 import ListDeleteAction from '../components/ListDeleteAction';
-import { color, set } from 'react-native-reanimated';
+import * as Analytics from 'expo-firebase-analytics';
 
 function LibraryDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);//state for category
@@ -166,6 +166,10 @@ function LibraryDetailsScreen({route,navigation}) {
                 );
               }
           }
+          Analytics.logEvent('Rating', {
+            screen: 'Details Screen',
+            purpose: 'User has given a rating',
+          });
       } 
     },[rating])
     //used to change book from one library state to another 
@@ -468,6 +472,10 @@ useEffect(()=>{
 
           }
         }
+        Analytics.logEvent('Review', {
+          screen: 'Details Screen',
+          purpose: 'User has posted a review',
+        });
         setDeleted(!deleted)
     })
     } }
