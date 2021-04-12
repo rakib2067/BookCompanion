@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "484527704210",
+    "project_id": "book-companion-304017",
+    "storage_bucket": "book-companion-304017.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484527704210:android:7a7de60a751d0104717e4b",
+        "android_client_info": {
+          "package_name": "com.rakib7.BookCompanion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "484527704210-u3edn4lmctvn8c1a51nsjr47sbc1eo6a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoTVNQJ8sweojgvXzz7TpZuCyJURTcgWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "484527704210-u3edn4lmctvn8c1a51nsjr47sbc1eo6a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

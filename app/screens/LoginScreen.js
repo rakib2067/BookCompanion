@@ -7,7 +7,7 @@ import { Form, FormField, SubmitButton } from "../components/forms";
 import AuthContext from "../auth/context";
 import Icon from "../components/Icon";
 import colors from "../config/colors";
-
+import * as Analytics from 'expo-firebase-analytics';
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(4).label("Password"),
@@ -19,6 +19,10 @@ function LoginScreen(props) {
     firebase.auth().signInWithEmailAndPassword(userInfo.email,userInfo.password)
     .then((result)=>{
       const user=result;
+      Analytics.logEvent('Login', {
+        screen: 'Home Screen',
+        purpose: 'User has Logged in',
+      });
       authContext.setUser(user);
     })
     .catch((error)=>{

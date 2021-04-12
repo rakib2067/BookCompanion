@@ -24,9 +24,21 @@
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.rakib7.BookCompanion"
+      "package": "com.rakib7.BookCompanion",
+      "googleServicesFile": "google-services.json"
     },
     "web": {
+      "config":{
+        "firebase":{
+          "apiKey": "AIzaSyBEl6W6u-QKPfM82zeO-cnAb93C7b5W1tk",
+          "authDomain": "book-companion-304017.firebaseapp.com",
+          "projectId": "book-companion-304017",
+          "storageBucket": "book-companion-304017.appspot.com",
+          "messagingSenderId": "484527704210",
+          "appId": "1:484527704210:web:ba702570d04d8958717e4b",
+          "measurementId": "G-VNMP4LKSJ3"
+        }
+      },
       "favicon": "./app/assets/favicon.png"
     },
     "description": "A book recommendation app, where you can keep a library of your books along with receiving recommendations based on your interests\n"

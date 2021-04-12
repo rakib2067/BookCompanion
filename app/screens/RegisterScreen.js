@@ -6,7 +6,7 @@ import firebase from 'firebase';
 import Screen from "../components/Screen";
 import { Form, FormField, SubmitButton } from "../components/forms";
 import AuthContext from "../auth/context";
-
+import * as Analytics from 'expo-firebase-analytics';
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
   email: Yup.string().required().email().label("Email"),
@@ -19,6 +19,10 @@ function RegisterScreen() {
   firebase.auth().createUserWithEmailAndPassword(email,password)
   .then((result)=>{
     const user= result
+    Analytics.logEvent('Login', {
+      screen: 'Home Screen',
+      purpose: 'User has Logged in',
+    });
     firebase.firestore().collection("users")
       .doc(firebase.auth().currentUser.uid)
       .set({

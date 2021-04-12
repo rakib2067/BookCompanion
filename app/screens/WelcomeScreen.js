@@ -1,11 +1,18 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import {Image, ImageBackground, StyleSheet,Text,View} from "react-native";
 import App from '../../App.js';
 import AppButton from '../components/AppButton.js';
 import Icon from '../components/Icon.js';
 import colors from '../config/colors.js'
 import routes from '../navigation/routes.js';
+import * as Analytics from 'expo-firebase-analytics';
 function WelcomeScreen({navigation}) {
+    useEffect(()=>{
+        Analytics.logEvent('AppOpened', {
+            screen: 'Welcome Screen',
+            purpose: 'User has opened the app',
+          });
+      },[])
     return (
        
         <ImageBackground 
