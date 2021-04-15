@@ -6,14 +6,17 @@ import colors from "../config/colors";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
-function Card({backgroundColor, title, subTitle, image,onPress,renderRightActions }) {
+function Card({backgroundColor,description, title, subTitle,numberOfLines=1, image,onPress,renderRightActions }) {
   return (
     <Swipeable renderRightActions={renderRightActions}>
     <TouchableWithoutFeedback onPress={onPress}>
     <View style={[styles.card, {backgroundColor}]}>
-      <Image style={styles.image} source={{uri: image}} />
+     {image && <Image style={styles.image} source={{uri: image}} />}
       <View style={styles.detailsContainer}>
-        <Text style={styles.title} numberOfLines={1}>
+      {description && <Text style={styles.description} numberOfLines={numberOfLines}>
+          Description:
+        </Text>}
+        <Text style={styles.title} numberOfLines={numberOfLines}>
           {title}
         </Text>
         <Text style={styles.subTitle} numberOfLines={2}>
@@ -35,6 +38,11 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     padding: 20,
+  },
+  description:{
+    marginBottom: 7,
+    fontWeight: "bold",
+
   },
   image: {
     width: "100%",

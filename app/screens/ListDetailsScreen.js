@@ -12,13 +12,14 @@ import { ListItemSeparator } from '../components/lists';
 import routes from '../navigation/routes';
 import { Rating } from 'react-native-ratings';
 import * as Analytics from 'expo-firebase-analytics';
+import Card from '../components/Card';
 
 function ListDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
     const [number,setNumber]=useState();
     const [average,setAverage]=useState(0);
-    const[reviews,setReviews]=useState();
+    const[reviews,setReviews]=useState([]);
     const[levelUp,setLevelup]=useState(true);
     const[refresh,setRefresh]=useState(true);
     const [name,setName]=useState({
@@ -119,6 +120,8 @@ function ListDetailsScreen({route,navigation}) {
     const title=item.volumeInfo.title;
     const author=item.volumeInfo.authors;
     const image= item.volumeInfo.imageLinks.thumbnail
+    const description=item.volumeInfo.description;
+    const published=item.volumeInfo.publishedDate;
     const user=firebase.auth().currentUser.uid
     const categories=[
         {
@@ -262,7 +265,9 @@ function ListDetailsScreen({route,navigation}) {
           .doc(title).set({
                 title,
                 author,
-                image
+                image,
+                description,
+                published
           })
           if(category.label=="currently reading"){
             firebase.firestore().collection("points")
@@ -296,7 +301,9 @@ function ListDetailsScreen({route,navigation}) {
         .doc(title).set({
               title,
               author,
-              image
+              image,
+              description,
+              published
         })
         Analytics.logEvent('addToLibrary', {
           screen: 'Details Screen',
@@ -306,7 +313,9 @@ function ListDetailsScreen({route,navigation}) {
         .set({
           title,
           author,
-          image
+          image,
+          description,
+          published
     }) 
         if(name.level==1){
             Alert.alert("Success", 'You just gained 10 points. Now go to your library')
@@ -326,6 +335,15 @@ function ListDetailsScreen({route,navigation}) {
           }
         }}
       },[category])
+      const noReviews= ()=>{
+        console.log(reviews.length)
+        if(reviews.length===0){
+          return <ListItem subTitle="No Reviews" chevron={false}/>
+        }
+        else if (reviews){
+          return null
+        }
+      }
     return (
         <ScrollView style={styles.container}>
             <Image 
@@ -339,7 +357,13 @@ function ListDetailsScreen({route,navigation}) {
             <Rating  readonly={true} imageSize={30} startingValue={average} tintColor={colors.light}/></View>
             <View style={styles.listItem}>
             <View styles={styles.iconContainer}>
-      
+              <Card backgroundColor={colors.white} 
+              description
+              title={description}
+              numberOfLines={10}
+              subTitle={"Published: "+published}
+
+              />
               <AppPicker 
               selectedItem={category?category:storage}
               onSelectItem={item =>setCategory(item)}
@@ -359,6 +383,7 @@ function ListDetailsScreen({route,navigation}) {
             />}        
             ItemSeparatorComponent={ListItemSeparator}       
         />
+        {noReviews()}
              </View>
              
              </View>

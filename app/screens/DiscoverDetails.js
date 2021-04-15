@@ -12,12 +12,13 @@ import { ListItemSeparator } from '../components/lists';
 import routes from '../navigation/routes';
 import { Rating } from 'react-native-ratings';
 import * as Analytics from 'expo-firebase-analytics';
+import Card from '../components/Card';
 function DiscoverDetails({route,navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
     const [number,setNumber]=useState();
     const [average,setAverage]=useState(0);
-    const[reviews,setReviews]=useState();
+    const[reviews,setReviews]=useState([]);
     const[levelUp,setLevelup]=useState(true);
     const[refresh,setRefresh]=useState(true);
     const [name,setName]=useState({
@@ -118,6 +119,8 @@ function DiscoverDetails({route,navigation}) {
     const title=item.title;
     const author=item.authors;
     const image= item.image
+    const description=item.description
+    const published= item.published 
     const user=firebase.auth().currentUser.uid
     const categories=[
         {
@@ -261,7 +264,9 @@ function DiscoverDetails({route,navigation}) {
           .doc(title).set({
                 title,
                 author,
-                image
+                image,
+                published,
+                description
           })
           if(category.label=="currently reading"){
             firebase.firestore().collection("points")
@@ -295,7 +300,9 @@ function DiscoverDetails({route,navigation}) {
         .doc(title).set({
               title,
               author,
-              image
+              image,
+              published,
+              description
         })
         Analytics.logEvent('addToLibrary', {
           screen: 'Details Screen',
@@ -305,7 +312,9 @@ function DiscoverDetails({route,navigation}) {
         .set({
           title,
           author,
-          image
+          image,
+          published,
+          description
     }) 
         if(name.level==1){
             Alert.alert("Success", 'You just gained 10 points. Now go to your library')
@@ -325,6 +334,15 @@ function DiscoverDetails({route,navigation}) {
           }
         }}
       },[category])
+      const noReviews= ()=>{
+        console.log(reviews.length)
+        if(reviews.length===0){
+          return <ListItem subTitle="No Reviews" chevron={false}/>
+        }
+        else if (reviews){
+          return null
+        }
+      }
     return (
         <ScrollView style={styles.container}>
         <Image 
@@ -332,11 +350,18 @@ function DiscoverDetails({route,navigation}) {
         source={{uri: item.image}} />
         <View style={styles.detailsContainer}>
         <AppText style= {styles.title}>{item.title}</AppText>
-        <AppText style={styles.author}>{item.authors}</AppText>
+        <AppText style={styles.author}>{item.author}</AppText>
         <View style={{justifyContent:"flex-start", alignItems:"flex-start"}}>
         <AppText style={styles.rating}>Average Rating: {average}/5</AppText>
         <Rating  readonly={true} imageSize={30} startingValue={average} tintColor={colors.light}/></View>
         <View style={styles.listItem}>
+        <Card backgroundColor={colors.white} 
+              description
+              title={description}
+              numberOfLines={10}
+              subTitle={"Published: "+published}
+
+              />
         <View styles={styles.iconContainer}>
   
           <AppPicker 
@@ -358,6 +383,7 @@ function DiscoverDetails({route,navigation}) {
         />}        
         ItemSeparatorComponent={ListItemSeparator}       
     />
+    {noReviews()}
          </View>
          
          </View>

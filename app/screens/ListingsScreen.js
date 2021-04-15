@@ -109,6 +109,12 @@ function ListingsScreen({navigation}) {
       else if(book.volumeInfo.hasOwnProperty('authors')=== false){
         book.volumeInfo['authors']='Anonymous';
       }
+      else if(book.volumeInfo.hasOwnProperty('description')=== false){
+        book.volumeInfo['description']='Currently Not Available';
+      }
+      else if(book.volumeInfo.hasOwnProperty('publishedDate')=== false){
+        book.volumeInfo['publishedDate']='Currently Not Available';
+      }
       return book;
     })
       return cleanedData;

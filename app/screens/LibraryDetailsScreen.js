@@ -13,6 +13,7 @@ import AppTextInput from '../components/AppTextInput';
 import ListItemSeparator from '../components/ListItemSeparator';
 import ListDeleteAction from '../components/ListDeleteAction';
 import * as Analytics from 'expo-firebase-analytics';
+import Card from '../components/Card';
 
 function LibraryDetailsScreen({route,navigation}) {
     const [category, setCategory]=useState(0);//state for category
@@ -216,7 +217,9 @@ function LibraryDetailsScreen({route,navigation}) {
             .doc(title).set({
                   title,
                   author,
-                  image
+                  image,
+                  published,
+                  description
             })
             if(category.label=="currently reading"){
               firebase.firestore().collection("points")
@@ -302,6 +305,15 @@ useEffect(()=>{
       )
     })
   },[])
+  const noReviews= ()=>{
+    console.log(reviews.length)
+    if(reviews.length===0){
+      return <ListItem subTitle="No Reviews" chevron={false}/>
+    }
+    else if (reviews){
+      return null
+    }
+  }
   //Delete useEffect live subscriber to delete books from the flatlist 
   useEffect(()=>{
     const subscriber=firebase.firestore().collection("books")
@@ -338,7 +350,7 @@ useEffect(()=>{
     //Event handlers
     //Handle submit to check first for gibberish, then for the length of the review text
     const handleSubmit=()=>{
-        //first check if users entered gibberish
+       if(def!==undefined){ //first check if users entered gibberish
         const words = require("gibberish-detective")({useCache: false});
         words.set("useCache", true)
         var tester=words.detect(review)
@@ -482,6 +494,9 @@ useEffect(()=>{
     //in the case that the person enters gibberish 
     else{
       Alert.alert('Error','This Review is not valid')
+    }}
+    else{
+      Alert.alert('Error','Cant submit review without rating first!')
     }
     }
     //event handler to delete the review frm the flatlist 
@@ -522,10 +537,18 @@ useEffect(()=>{
             <AppText style= {styles.title}>{item.title}</AppText>
             <AppText style={styles.author}>{item.author}</AppText>
             <View style={{justifyContent:"flex-start", alignItems:"flex-start", }}>
-            <AppText style={styles.rating}> Average Rating: {average}/5</AppText>
+            <AppText style={styles.rating}>Average Rating: {average}/5</AppText>
             <Rating readonly={true} imageSize={30} startingValue={average} tintColor={colors.light}/> 
             </View>
+            
             <View style={styles.listItem}>
+            <Card backgroundColor={colors.white} 
+              description
+              title={item.description}
+              numberOfLines={10}
+              subTitle={"Published: "+item.published}
+
+              />
             <View styles={styles.iconContainer}>
             <AppPicker 
               selectedItem={category?category:storage}
@@ -560,13 +583,10 @@ useEffect(()=>{
                 onPress={()=>setNumber(10)}
                 renderRightActions={()=>
                 <ListDeleteAction onPress={()=>handleDelete(item)}/>}
-            />}
-        
-            ItemSeparatorComponent={ListItemSeparator}
-            
+            />}       
+            ItemSeparatorComponent={ListItemSeparator} 
         />
-            
-
+        {noReviews()}
              </View>           
              </View>
             </View>
