@@ -8,8 +8,15 @@ import * as firebase from 'firebase';
 import routes from "../navigation/routes";
 import Card from "../components/Card";
 import CardDeleteAction from "../components/CardDeleteAction";
+import * as Analytics from 'expo-firebase-analytics'
 function DiscoverScreen({navigation}) {
     const [discover,setDiscover]=useState([]);
+    useEffect(()=>{
+        Analytics.logEvent('Discover', {
+          screen: 'Discover Screen',
+          purpose: 'User has viewed the discover screen',
+        });
+      },[])
     useEffect(()=>{
         //can call a separate function to get all books
         const subscriber=firebase.firestore().collection("books").onSnapshot(snapshot=>{
