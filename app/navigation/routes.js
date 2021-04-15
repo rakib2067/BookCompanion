@@ -1,6 +1,8 @@
 export default Object.freeze({
     ACCOUNT:"Account",
     CURRENT_DETAILS:"CurrentDetails",
+    DISCOVER_SCREEN:"DiscoverScreen",
+    DISCOVER_DETAILS:"DiscoverDetails",
     FUTURE_DETAILS:"FutureDetails",
     LISTING_DETAILS:"ListingDetails",
     LISTINGS:"Listings",

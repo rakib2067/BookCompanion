@@ -13,6 +13,7 @@ function LibraryScreen({navigation}) {
   const [current,setCurrent]=useState();
   const [past,setPast]=useState();
   const [future,setFuture]=useState();
+  const [discover,setDiscover]=useState();
     const [name,setName]=useState({
         exp:null,
         level:null,
@@ -29,6 +30,11 @@ function LibraryScreen({navigation}) {
           target:Ref.target
         })
       })
+  },[])
+  useEffect(()=>{
+    firebase.firestore().collection("books").onSnapshot(snapshot=>{
+      setDiscover(snapshot.size)
+    })
   },[])
   useEffect(()=>{
       if(name.level==1&&name.exp==70){
@@ -79,6 +85,16 @@ function LibraryScreen({navigation}) {
           subTitle={past? past+ " books":"0 books"}
           onPress={() => navigation.navigate(routes.PAST_DETAILS)}
           IconComponent={<Icon iconColor="#7289DA" backgroundColor="#2c2f33" size={60} name="book-plus"/>}
+          
+        />
+      </View>
+      <View style={styles.container1}>
+        <ListItem
+          
+          title="Discover"
+          subTitle={discover? discover+ " books":"0 books"}
+          onPress={() => navigation.navigate(routes.DISCOVER_SCREEN)}
+          IconComponent={<Icon iconColor="#99aab5" backgroundColor="#2c2f33" size={60} name="bookmark-multiple"/>}
           
         />
       </View>

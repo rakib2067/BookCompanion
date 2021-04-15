@@ -12,8 +12,7 @@ import { ListItemSeparator } from '../components/lists';
 import routes from '../navigation/routes';
 import { Rating } from 'react-native-ratings';
 import * as Analytics from 'expo-firebase-analytics';
-
-function ListDetailsScreen({route,navigation}) {
+function DiscoverDetails({route,navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
     const [number,setNumber]=useState();
@@ -116,9 +115,9 @@ function ListDetailsScreen({route,navigation}) {
     
       },[levelUp])
     const item=route.params;
-    const title=item.volumeInfo.title;
-    const author=item.volumeInfo.authors;
-    const image= item.volumeInfo.imageLinks.thumbnail
+    const title=item.title;
+    const author=item.authors;
+    const image= item.image
     const user=firebase.auth().currentUser.uid
     const categories=[
         {
@@ -328,42 +327,42 @@ function ListDetailsScreen({route,navigation}) {
       },[category])
     return (
         <ScrollView style={styles.container}>
-            <Image 
-            style={styles.image}
-            source={{uri: item.volumeInfo.imageLinks.thumbnail}} />
-            <View style={styles.detailsContainer}>
-            <AppText style= {styles.title}>{item.volumeInfo.title}</AppText>
-            <AppText style={styles.author}>{item.volumeInfo.authors}</AppText>
-            <View style={{justifyContent:"flex-start", alignItems:"flex-start"}}>
-            <AppText style={styles.rating}>Average Rating: {average}/5</AppText>
-            <Rating  readonly={true} imageSize={30} startingValue={average} tintColor={colors.light}/></View>
-            <View style={styles.listItem}>
-            <View styles={styles.iconContainer}>
-      
-              <AppPicker 
-              selectedItem={category?category:storage}
-              onSelectItem={item =>setCategory(item)}
-              items={categories}
-              icon="apps" 
-              placeholder="Add To Library"/>
-              <ListItem title="Reviews" chevron={false}/>
-            <FlatList 
-            data={reviews}
-            renderItem={({item}) => 
-            <ListItem
-                title={item.userName}
-                subTitle={item.review}
-                image={{uri:item.url}}
-                numberOfLines={number? number: 2}
-                onPress={()=>setNumber(10)}
-            />}        
-            ItemSeparatorComponent={ListItemSeparator}       
-        />
-             </View>
-             
-             </View>
-            </View>
-        </ScrollView>
+        <Image 
+        style={styles.image}
+        source={{uri: item.image}} />
+        <View style={styles.detailsContainer}>
+        <AppText style= {styles.title}>{item.title}</AppText>
+        <AppText style={styles.author}>{item.authors}</AppText>
+        <View style={{justifyContent:"flex-start", alignItems:"flex-start"}}>
+        <AppText style={styles.rating}>Average Rating: {average}/5</AppText>
+        <Rating  readonly={true} imageSize={30} startingValue={average} tintColor={colors.light}/></View>
+        <View style={styles.listItem}>
+        <View styles={styles.iconContainer}>
+  
+          <AppPicker 
+          selectedItem={category?category:storage}
+          onSelectItem={item =>setCategory(item)}
+          items={categories}
+          icon="apps" 
+          placeholder="Add To Library"/>
+          <ListItem title="Reviews" chevron={false}/>
+        <FlatList 
+        data={reviews}
+        renderItem={({item}) => 
+        <ListItem
+            title={item.userName}
+            subTitle={item.review}
+            image={{uri:item.url}}
+            numberOfLines={number? number: 2}
+            onPress={()=>setNumber(10)}
+        />}        
+        ItemSeparatorComponent={ListItemSeparator}       
+    />
+         </View>
+         
+         </View>
+        </View>
+    </ScrollView>
     );
 }
 const styles = StyleSheet.create({
@@ -399,7 +398,6 @@ const styles = StyleSheet.create({
     listItem:{
         marginVertical: 30
     },
-  
-    
 })
-export default ListDetailsScreen;
+
+export default DiscoverDetails;
