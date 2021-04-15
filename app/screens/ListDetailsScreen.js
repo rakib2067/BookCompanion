@@ -198,7 +198,7 @@ function ListDetailsScreen({route,navigation}) {
                 .doc(firebase.auth().currentUser.uid).set({
                   exp:name.exp+10,
                   total:40
-                },{merge:true}).then(setRefresh(!refresh) )
+                },{merge:true}).then(setRefresh(!refresh))
                 Alert.alert(
                   "Congratulations",
                   "You just earned 10 exp!",

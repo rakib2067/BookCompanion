@@ -39,14 +39,16 @@ function LibraryDetailsScreen({route,navigation}) {
     const title=item.title;
     const author=item.author;
     const image= item.image
+    const description=item.description
+    const published= item.published
     const user=firebase.auth().currentUser.uid
     const categories=[
         {
-            label: "currently reading",
+            label: "want to read",
             value: 2,
           },
           {
-            label: "want to read",
+            label: "currently reading",
             value: 1,
           },
           {
@@ -91,7 +93,7 @@ function LibraryDetailsScreen({route,navigation}) {
                   exp:0,
                   level:progress.level+1,
                   target:Math.round(progress.target*1.25),
-                  total:Math.round(progress.total+progress.target)
+                  total:Math.round(progress.total)
                 },{merge:true}).then(setRefresh(!refresh))
                 Vibration.vibrate()
                 ToastAndroid.show('You leveled up to Level: '+(progress.level+1)+"!", ToastAndroid.LONG);
@@ -221,7 +223,9 @@ function LibraryDetailsScreen({route,navigation}) {
                   published,
                   description
             })
-            if(category.label=="currently reading"){
+
+            if(storage.label=="want to read")
+            {if(category.label=="currently reading"){
               firebase.firestore().collection("points")
             .doc(firebase.auth().currentUser.uid).set({
               exp:progress.exp+10,
@@ -230,9 +234,14 @@ function LibraryDetailsScreen({route,navigation}) {
             Alert.alert("Success","You have earned 10 exp")
             }
             else if(category.label=="want to read"){
-              Alert.alert("Success","Book has changed libraries")
+              Alert.alert("Error","This book is already in the specified library")
             }
             else if(category.label=="read"){
+            Alert.alert("Success","Book Has Changed Libraries")
+            }
+          }
+          else if(storage.label=="currently reading"){
+            if(category.label=="read"){
               firebase.firestore().collection("points")
             .doc(firebase.auth().currentUser.uid).set({
               exp:progress.exp+15,
@@ -240,6 +249,26 @@ function LibraryDetailsScreen({route,navigation}) {
             },{merge:true}).then(setRefresh(!refresh))
             Alert.alert("Success","You have earned 15 exp")
             }
+            else if(category.label=="want to read"){
+            Alert.alert("Success","Book Has Changed Libraries")
+            }
+            else if(category.label=="currently reading"){
+            Alert.alert("Error","This book is already in the specified library")
+            }
+            
+          }
+          else if(storage.label=="read"){
+            if(category.label=="read"){
+            Alert.alert("Error","This book is already in the specified library")
+            }
+            else if(category.label=="want to read"){
+            Alert.alert("Success","Book Has Changed Libraries")
+            }
+            else if(category.label=="currently reading"){
+            Alert.alert("Success","Book Has Changed Libraries")
+            }
+            
+          }
         }  
         }
       },[category])
