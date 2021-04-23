@@ -100,6 +100,11 @@ function ListingsScreen({navigation}) {
 
   cleanData=(data)=>{
     const cleanedData=data.map((book)=>{
+
+      if(book.hasOwnProperty('volumeInfo')){
+        console.log(book)
+
+      }
       if(book.volumeInfo.hasOwnProperty('publishedDate')=== false){
         book.volumeInfo['publishedDate']='0000';
       }
@@ -110,6 +115,18 @@ function ListingsScreen({navigation}) {
         book.volumeInfo['authors']='Anonymous';
       }
       else if(book.volumeInfo.hasOwnProperty('description')=== false){
+        book.volumeInfo['description']='Currently Not Available';
+      }
+      else if(book.volumeInfo.description=== undefined){
+        book.volumeInfo['description']='Currently Not Available';
+      }
+      else if(book.volumeInfo['description']=== undefined){
+        book.volumeInfo['description']='Currently Not Available';
+      }
+      else if(book.volumeInfo['description']=== false){
+        book.volumeInfo['description']='Currently Not Available';
+      }
+      else if(book.volumeInfo['description']=== null){
         book.volumeInfo['description']='Currently Not Available';
       }
       else if(book.volumeInfo.hasOwnProperty('publishedDate')=== false){
@@ -140,7 +157,7 @@ function ListingsScreen({navigation}) {
       }
       let pre=data.items;
       results=cleanData(pre);//Function to clean the data
-     
+      
       setState(prevState => {
         return {...prevState, results:results}
       })
@@ -196,7 +213,7 @@ function ListingsScreen({navigation}) {
         renderItem={({ item }) => (
           <Card
             title={item.volumeInfo.title}
-            subTitle={item.volumeInfo.authors}
+            subTitle={item.volumeInfo.description}
             image={item.volumeInfo.imageLinks.thumbnail}
             onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
             backgroundColor={colors.white}
