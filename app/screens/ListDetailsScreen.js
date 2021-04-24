@@ -377,6 +377,7 @@ function ListDetailsScreen({route,navigation}) {
             <ListItem
                 title={item.userName}
                 subTitle={item.review}
+                rating={item.userRating}
                 image={{uri:item.url}}
                 numberOfLines={number? number: 2}
                 onPress={()=>setNumber(10)}

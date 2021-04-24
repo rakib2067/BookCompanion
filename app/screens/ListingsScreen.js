@@ -106,30 +106,33 @@ function ListingsScreen({navigation}) {
 
       }
       if(book.volumeInfo.hasOwnProperty('publishedDate')=== false){
-        book.volumeInfo['publishedDate']='0000';
+        book.volumeInfo['publishedDate']='N/A';
       }
-      else if(book.volumeInfo.hasOwnProperty('imageLinks')=== false){
+      if(book.volumeInfo.hasOwnProperty('imageLinks')=== false){
         book.volumeInfo['imageLinks']={thumbnail:'https://vignette.wikia.nocookie.net/pandorahearts/images/a/ad/Not_available.jpg'}
       }
-      else if(book.volumeInfo.hasOwnProperty('authors')=== false){
+      if(book.volumeInfo.hasOwnProperty('authors')=== false){
+        book.volumeInfo['authors']=['Anonymous'];
+      }
+      if(book.volumeInfo.hasOwnProperty('authors')=== false){
         book.volumeInfo['authors']='Anonymous';
       }
-      else if(book.volumeInfo.hasOwnProperty('description')=== false){
+      if(book.volumeInfo.hasOwnProperty('description')=== false){
         book.volumeInfo['description']='Currently Not Available';
       }
-      else if(book.volumeInfo.description=== undefined){
+      if(book.volumeInfo.description=== undefined){
         book.volumeInfo['description']='Currently Not Available';
       }
-      else if(book.volumeInfo['description']=== undefined){
+      if(book.volumeInfo['description']=== undefined){
         book.volumeInfo['description']='Currently Not Available';
       }
-      else if(book.volumeInfo['description']=== false){
+      if(book.volumeInfo['description']=== false){
         book.volumeInfo['description']='Currently Not Available';
       }
-      else if(book.volumeInfo['description']=== null){
+      if(book.volumeInfo['description']=== null){
         book.volumeInfo['description']='Currently Not Available';
       }
-      else if(book.volumeInfo.hasOwnProperty('publishedDate')=== false){
+      if(book.volumeInfo.hasOwnProperty('publishedDate')=== false){
         book.volumeInfo['publishedDate']='Currently Not Available';
       }
       return book;
@@ -213,7 +216,7 @@ function ListingsScreen({navigation}) {
         renderItem={({ item }) => (
           <Card
             title={item.volumeInfo.title}
-            subTitle={item.volumeInfo.description}
+            subTitle={item.volumeInfo.authors}
             image={item.volumeInfo.imageLinks.thumbnail}
             onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
             backgroundColor={colors.white}
