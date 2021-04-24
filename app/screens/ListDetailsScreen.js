@@ -108,7 +108,7 @@ function ListDetailsScreen({route,navigation}) {
                       exp:0,
                       level:name.level+1,
                       target:Math.round(name.target*1.25),
-                      total:Math.round(name.total+name.target)
+                      total:Math.round(name.total)
                     },{merge:true}).then(setRefresh(!refresh))
                     Vibration.vibrate()
                     ToastAndroid.show('You leveled up to Level: '+(name.level+1)+"!", ToastAndroid.LONG);
