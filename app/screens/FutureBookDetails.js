@@ -13,7 +13,7 @@ import routes from '../navigation/routes';
 import { Rating } from 'react-native-ratings';
 import * as Analytics from 'expo-firebase-analytics';
 import Card from '../components/Card';
-function DiscoverDetails({route,navigation}) {
+function FutureBookDetails({route,navigation}) {
     const [category, setCategory]=useState(0);
     const [storage, setStorage]=useState(0);
     const [number,setNumber]=useState();
@@ -443,5 +443,4 @@ const styles = StyleSheet.create({
         marginVertical: 30
     },
 })
-
-export default DiscoverDetails;
+export default FutureBookDetails;

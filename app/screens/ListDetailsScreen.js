@@ -105,7 +105,7 @@ function ListDetailsScreen({route,navigation}) {
         {if(name.exp>=name.target){
           firebase.firestore().collection("points")
                     .doc(firebase.auth().currentUser.uid).set({
-                      exp:0,
+                      exp:(name.exp-name.target),
                       level:name.level+1,
                       target:Math.round(name.target*1.25),
                       total:Math.round(name.total)
@@ -326,12 +326,30 @@ function ListDetailsScreen({route,navigation}) {
             },{merge:true}).then(setRefresh(!refresh))
           }
           else if(name.level!==1){
-            Alert.alert('Congratulations You just gained 10 points.')
-            firebase.firestore().collection("points")
+            if(category.label=="currently reading"){
+              firebase.firestore().collection("points")
             .doc(firebase.auth().currentUser.uid).set({
               exp:name.exp+10,
               total:name.total+10
             },{merge:true}).then(setRefresh(!refresh))
+            Alert.alert("Success","You have earned 10 exp")
+            }
+            else if(category.label=="want to read"){
+              firebase.firestore().collection("points")
+              .doc(firebase.auth().currentUser.uid).set({
+                exp:name.exp+5,
+                total:name.total+5
+              },{merge:true}).then(setRefresh(!refresh))
+            Alert.alert("Success","You have earned 5 exp")
+            }
+            else if(category.label=="read"){
+              firebase.firestore().collection("points")
+            .doc(firebase.auth().currentUser.uid).set({
+              exp:name.exp+15,
+              total:name.total+15
+            },{merge:true}).then(setRefresh(!refresh))
+            Alert.alert("Success","You have earned 15 exp")
+            }
           }
         }}
       },[category])
@@ -344,6 +362,7 @@ function ListDetailsScreen({route,navigation}) {
           return null
         }
       }
+
     return (
         <ScrollView style={styles.container}>
             <Image 

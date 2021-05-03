@@ -9,6 +9,7 @@ import PastDetailsScreen from "../screens/PastDetailsScreen";
 import ListDetailsScreen from "../screens/ListDetailsScreen";
 import DiscoverScreen from "../screens/DiscoverScreen";
 import DiscoverDetails from "../screens/DiscoverDetails";
+import FutureBookDetails from "../screens/FutureBookDetails";
 
 const Stack= createStackNavigator();
 
@@ -22,6 +23,7 @@ const LibraryNavigator= () =>(
          <Stack.Screen name="LibraryDetails" component={LibraryDetailsScreen} options={{headerShown:false}}/>
          <Stack.Screen name="DiscoverScreen" component={DiscoverScreen} options={{headerShown:false}}/>
          <Stack.Screen name="DiscoverDetails" component={DiscoverDetails} options={{headerShown:false}}/>
+         <Stack.Screen name="FutureBookDetails" component={FutureBookDetails} options={{headerShown:false}}/>
     </Stack.Navigator>
 )
 export default LibraryNavigator;

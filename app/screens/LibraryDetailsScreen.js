@@ -90,7 +90,7 @@ function LibraryDetailsScreen({route,navigation}) {
     {if(progress.exp>=progress.target){
       firebase.firestore().collection("points")
                 .doc(firebase.auth().currentUser.uid).set({
-                  exp:0,
+                  exp:(progress.exp-progress.target),
                   level:progress.level+1,
                   target:Math.round(progress.target*1.25),
                   total:Math.round(progress.total)

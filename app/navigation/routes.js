@@ -4,6 +4,7 @@ export default Object.freeze({
     DISCOVER_SCREEN:"DiscoverScreen",
     DISCOVER_DETAILS:"DiscoverDetails",
     FUTURE_DETAILS:"FutureDetails",
+    FUTURE_BOOK_DETAILS:"FutureBookDetails",
     LISTING_DETAILS:"ListingDetails",
     LISTINGS:"Listings",
     LISTING_EDIT: "ListingEdit",
