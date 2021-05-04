@@ -343,6 +343,64 @@ useEffect(()=>{
       return null
     }
   }
+  const noRating= ()=>{
+    if(storage.label==="currently reading"){
+      return <AirbnbRating 
+      count={5}
+      defaultRating={def?def.rating:0}
+      onFinishRating={rated => setRating(rated)}
+   />
+    }
+    else if (storage.label==="read"){
+      return <AirbnbRating 
+      count={5}
+      defaultRating={def?def.rating:0}
+      onFinishRating={rated => setRating(rated)}
+   />
+    }
+    else if(storage.label==="want to read"){
+      if(progress.level==1){
+        return <AirbnbRating 
+        count={5}
+        defaultRating={def?def.rating:0}
+        onFinishRating={rated => setRating(rated)}
+     />
+      }
+      else{
+      return null}
+
+    }
+  }
+  const noInput= ()=>{
+    if(storage.label==="currently reading"){
+      return  <AppTextInput
+      backgroundColor={colors.white}
+      placeholder="Write a review"
+      onSubmitEditing={handleSubmit}
+      onChangeText={text => setReview(text)}
+      />
+    }
+    else if (storage.label==="read"){
+      return  <AppTextInput
+      backgroundColor={colors.white}
+      placeholder="Write a review"
+      onSubmitEditing={handleSubmit}
+      onChangeText={text => setReview(text)}
+      />
+    }
+    else if(storage.label==="want to read"){
+      if(progress.level===1){
+        return <AppTextInput
+        backgroundColor={colors.white}
+        placeholder="Write a review"
+        onSubmitEditing={handleSubmit}
+        onChangeText={text => setReview(text)}
+        />
+      }
+      return null
+
+    }
+  }
   //Delete useEffect live subscriber to delete books from the flatlist 
   useEffect(()=>{
     const subscriber=firebase.firestore().collection("books")
@@ -586,19 +644,11 @@ useEffect(()=>{
               icon="apps" 
               placeholder="Add To Library"/>
             <View style={styles.rating} >
-            <AirbnbRating 
-               count={5}
-               defaultRating={def?def.rating:0}
-               onFinishRating={rated => setRating(rated)}
-            />
+            {noRating()}
+           
             </View>
-            
-            <AppTextInput
-            backgroundColor={colors.white}
-            placeholder="Write a review"
-            onSubmitEditing={handleSubmit}
-            onChangeText={text => setReview(text)}
-            />
+            {noInput()}
+           
             <ListItem title="Reviews" chevron={false}/>
             <FlatList 
             data={reviews}
