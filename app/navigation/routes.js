@@ -1,9 +1,9 @@
 export default Object.freeze({
     ACCOUNT:"Account",
-    CURRENT_DETAILS:"CurrentDetails",
-    DISCOVER_SCREEN:"DiscoverScreen",
+    CURRENT_DETAILS:"Currently Reading",
+    DISCOVER_SCREEN:"Discover",
     DISCOVER_DETAILS:"DiscoverDetails",
-    FUTURE_DETAILS:"FutureDetails",
+    FUTURE_DETAILS:"Want To Read",
     FUTURE_BOOK_DETAILS:"FutureBookDetails",
     LISTING_DETAILS:"ListingDetails",
     LISTINGS:"Listings",
@@ -13,7 +13,7 @@ export default Object.freeze({
     LEADERBOARDS:"Leaderboards",
     LOGIN: "Login",
     MESSAGES: "Messages",
-    PAST_DETAILS:"PastDetails",
+    PAST_DETAILS:"Read",
     REGISTER: "Register",
     WELCOME: "Welcome"
 
