@@ -134,7 +134,7 @@ function FutureDetailsScreen({navigation}) {
             title={item.title}
             subTitle={item.author}
             image={item.image}
-            onPress={() => navigation.navigate(routes.LIBRARY_DETAILS, item)}
+            onPress={() => navigation.navigate(routes.FUTURE_BOOK_DETAILS, item)}
             backgroundColor={colors.light}
             renderRightActions={()=>
                 <CardDeleteAction onPress={()=>handleDelete(item)}/>}
